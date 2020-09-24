@@ -14,6 +14,7 @@ The hotel owner can register a hotel and edit its data and room data. You can li
 `Java11` `Spring Boot` `MySQL` `JPA` `Hibernate` `JUnit` `HTML/CSS` `Bootstrap` `JavaScript` `TypeScript` `Angular` `Material` `Selenium` `AWS` `GitLab Runner` `Postman`
 
 ## Entity Relationship Diagram
+<img src="readme-image/ERM.PNG">
 
 ## Screen captures
 **Homepage**
