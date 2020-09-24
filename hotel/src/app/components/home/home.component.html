@@ -1,0 +1,197 @@
+<div class="bg" [style.background-position]="backgroundPosition" >
+
+  <div class="container" style="padding-top: 30px;  margin-left: auto;  margin-right: auto;">
+
+    <div class="float-right">
+      <br>
+      <br>
+      <br>
+      <h1 class="display-1 text-right" style="font-size: calc(60px + 2vw); color: white">BUDAPEST</h1>
+      <h1 class="display-4 text-right" style="font-size: calc(30px + 1vw); color: white">Téged vár!</h1>
+      <br>
+    </div>
+
+    <div class="card text-center bg-light mb-3" style="margin-top: 1.5rem; width: 16rem;">
+      <div class="card-body pr-2 pl-2 pt-4 pb-4">
+        <form [formGroup]="filterForm">
+          <div class="form-group ">
+            <label for="numberOfGuests">
+              Vendégek száma:
+            </label>
+            <br>
+            <input
+              formControlName="numberOfGuests"
+              id="numberOfGuests"
+              name="numberOfGuests"
+              type="number"
+            >
+            <small
+              *ngIf="filterForm.get('numberOfGuests').invalid && filterForm.get('numberOfGuests').touched && !filterForm.get('numberOfGuests').errors?.serverError"
+              class="text-danger">
+              Kérlek add meg a vendégek számát!
+            </small>
+          </div>
+
+
+          <div class="form-group">
+            <label>
+              Utazás időpontja:
+            </label>
+            <div style="white-space: nowrap">
+              <input
+                style="display: inline-block"
+                placeholder="Válasz időpontot"
+                [satDatepicker]="bookingDateRange"
+                [matDatepickerFilter]="dateFilter"
+                formControlName="bookingDateRange"
+                id="bookingDateRange"
+                name="bookingDateRange"/>
+              <sat-datepicker #bookingDateRange [rangeMode]="true" style="display: inline-block">
+              </sat-datepicker>
+              <sat-datepicker-toggle matSuffix [for]="bookingDateRange"
+                                     style="margin-top: -5px; display: inline-block">
+              </sat-datepicker-toggle>
+            </div>
+              <small
+                *ngIf="filterForm.get('bookingDateRange').invalid && filterForm.get('bookingDateRange').touched && !filterForm.get('bookingDateRange').errors?.serverError"
+                class="text-danger">
+                <br>
+                Kérlek válasz időpontot!
+              </small>
+          </div>
+
+          <hr>
+
+          <div>
+            <button (click)="filterHotelList()" class="btn btn-primary btn-block mr-auto ml-auto" style="width: 90%">
+              Keresés a Hotelek között
+            </button>
+            <br>
+
+            <button (click)="goToHotelList()" class="btn btn-outline-primary btn-block mr-auto ml-auto" style="width: 90%">
+              Megnézem a teljes listát
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <br>
+    <br>
+
+    <h5 style="color: white">Népszerű ajánlataink:</h5>
+
+    <div class="d-flex flex-wrap justify-content-between">
+      <div (click)="goToHotelDetails(bestAvgRateHotel?.id)" *ngFor="let bestAvgRateHotel of bestAvgRateHotelList"
+           class="card mb-3 shadow " style="width: 16rem; cursor: pointer">
+
+        <cl-image [public-id]="getPublicId(bestAvgRateHotel?.hotelImageUrl)" class="card-img-top" width="100%">
+          <cl-transformation
+            crop="fill"
+            height="200"
+            width="280">
+          </cl-transformation>
+        </cl-image>
+
+        <div class="card-body" style="padding: 10px; padding-bottom: 0px">
+          <h6 class="card-text" style="margin-bottom: 0px">{{bestAvgRateHotel?.name}}</h6>
+          <p class="card-text" style="margin-bottom: 8px">{{bestAvgRateHotel?.hotelType}}</p>
+        </div>
+        <div class="card-footer bg-transparent border-0"
+             style="padding-top: 0px; padding-left: 10px; padding-right: 10px; ">
+          <table style="width:100%">
+            <tr>
+              <th>
+                <h6 class="card-text">{{bestAvgRateHotel?.bestPricePerNightPerPerson.toLocaleString('hu-HU')}}
+                  Ft/fő/éj</h6>
+              </th>
+              <th>
+                <h4 class="text-right"><span class="badge badge-primary">{{bestAvgRateHotel?.avgRate}}</span></h4>
+              </th>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <br>
+
+    <h5 style="color: white">Legkedvezőbb ajánlataink:</h5>
+
+    <div class="d-flex flex-wrap justify-content-between">
+      <div (click)="goToHotelDetails(bestPriceHotel?.id)" *ngFor="let bestPriceHotel of bestPriceHotelList"
+           class="card mb-3 shadow " style="width: 16rem; cursor: pointer">
+
+        <cl-image [public-id]="getPublicId(bestPriceHotel?.hotelImageUrl)" class="card-img-top" width="100%">
+          <cl-transformation
+            crop="fill"
+            height="200"
+            width="280">
+          </cl-transformation>
+        </cl-image>
+
+        <div class="card-body" style="padding: 10px; padding-bottom: 0px">
+          <h6 class="card-text" style="margin-bottom: 0px">{{bestPriceHotel?.name}}</h6>
+          <p class="card-text" style="margin-bottom: 8px">{{bestPriceHotel?.hotelType}}</p>
+        </div>
+        <div class="card-footer bg-transparent border-0"
+             style="padding-top: 0px; padding-left: 10px; padding-right: 10px; ">
+          <table style="width:100%">
+            <tr>
+              <th>
+                <h6 class="card-text">{{bestPriceHotel?.bestPricePerNightPerPerson.toLocaleString('hu-HU')}}
+                  Ft/fő/éj</h6>
+              </th>
+              <th>
+                <h4 class="text-right"><span class="badge badge-primary">{{bestPriceHotel?.avgRate}}</span></h4>
+              </th>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <br>
+
+    <h5 style="color: white">Aktuális ajánlataink:</h5>
+
+    <div class="d-flex flex-wrap justify-content-between">
+      <div (click)="goToHotelDetails(randomHotel?.id)" *ngFor="let randomHotel of randomHotelList"
+           class="card mb-3 shadow" style="width: 16rem; cursor: pointer">
+
+        <cl-image [public-id]="getPublicId(randomHotel?.hotelImageUrl)" class="card-img-top" width="100%">
+          <cl-transformation
+            crop="fill"
+            height="200"
+            width="280">
+          </cl-transformation>
+        </cl-image>
+
+        <div class="card-body" style="padding: 10px; padding-bottom: 0px">
+          <h6 class="card-text" style="margin-bottom: 0px">{{randomHotel?.name}}</h6>
+          <p class="card-text" style="margin-bottom: 8px">{{randomHotel?.hotelType}}</p>
+        </div>
+        <div class="card-footer bg-transparent border-0"
+             style="padding-top: 0px; padding-left: 10px; padding-right: 10px; ">
+          <table style="width:100%">
+            <tr>
+              <th>
+                <h6 class="card-text">{{randomHotel?.bestPricePerNightPerPerson.toLocaleString('hu-HU')}}
+                  Ft/fő/éj</h6>
+              </th>
+              <th>
+                <h4 class="text-right"><span class="badge badge-primary">{{randomHotel?.avgRate}}</span></h4>
+              </th>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <br>
+    <br>
+
+  </div>
+</div>
+
+
+
+
+

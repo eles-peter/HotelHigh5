@@ -1,0 +1,7 @@
+<div *ngIf="!isActivated" class="alert alert-danger" role="alert">
+  <p *ngIf="!isActivated"><strong>Sikertelen regisztráció!</strong></p>
+</div>
+<div *ngIf="isActivated" class="alert alert-success" role="alert">
+  <p *ngIf="isActivated"><strong>Sikeres regisztráció! Kérjük jelentkezz be!</strong></p>
+</div>
+<!--<app-login *ngIf="isActivated"></app-login>-->

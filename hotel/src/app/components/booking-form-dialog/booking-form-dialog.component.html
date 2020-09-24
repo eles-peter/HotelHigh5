@@ -1,0 +1,430 @@
+<div *ngIf="bookingStatus==='userBooking'" class="modal-dialog modal-lg modal-dialog-scrollable"
+     style="margin:0; padding:0; width: 100%; height: 100%; max-width: 100%; max-height: 100%">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3 class="modal-title">Foglalás véglegesítése</h3>
+      <button [mat-dialog-close]="false" aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <h4>{{data.hotel.name}} - {{data.hotel.hotelType}}</h4>
+      cím: {{data.hotel.postalCode}} {{data.hotel.city}}, {{data.hotel.streetAddress}}<br>
+      foglalás kezdete: {{data.firstStartDate.toLocaleDateString('hu-HU', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long'
+    })}}<br>
+      foglalás vége: {{data.lastEndDate.toLocaleDateString('hu-HU', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long'
+    })}}<br>
+      vendégek száma: {{data.numberOfGuests}} fő<br>
+      foglalás ára: {{this.priceOfBooking.toLocaleString('hu-HU')}} Ft<br>
+      <br>
+
+      <table class="table table-sm">
+        <thead class="thead-light">
+        <tr>
+          <th>Lefoglalt szobák:</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let roomReservation of data.roomReservationList">
+          <td>
+            <h6 style="display: inline;">{{ roomReservation.room.roomName }} - {{ roomReservation.room.roomType }}</h6>
+            (Férőhelyek: {{ roomReservation.room.numberOfBeds }})
+            <br>
+            foglalás kezdete: {{roomReservation.startDate.toLocaleDateString('hu-HU')}}
+            vége: {{roomReservation.endDate.toLocaleDateString('hu-HU')}}
+            éjszakák száma: {{roomReservation.numberOfNights}}
+          </td>
+          <td class="text-right">
+            ár/éjszaka: {{ roomReservation.room.pricePerNight.toLocaleString('hu-HU') }} Ft
+            <br>
+            teljes
+            ár: {{ (roomReservation.numberOfNights * roomReservation.room.pricePerNight).toLocaleString('hu-HU')}} Ft
+          </td>
+        </tr>
+        <tr>
+          <td><h6>Fizetendő összesen:</h6></td>
+          <td class="text-right">
+            <h6> {{this.priceOfBooking.toLocaleString('hu-HU')}} Ft</h6>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+
+      <form [formGroup]="userBookingForm">
+
+        <div class="form-group">
+          <label class="form-control-label" for="remark">
+            Mondja el nekünk különleges kérésedet:
+          </label>
+          <textarea
+            class="form-control"
+            formControlName="remark"
+            id="remark"
+            name="remark"
+            rows="5"
+            type="text"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label>
+            <input formControlName="aSZF" required type="checkbox">
+            Elfogadom az Általános szerződési feltételeket
+          </label>
+          <small class="text-danger">
+            <!--            *ngIf="bookingForm.get('aSZF').invalid && !bookingForm.get('aSZF').touched && !bookingForm.get('aSZF').errors?.serverError"-->
+            <br>
+            Kérlek fogadd el az Általános szerződési feltételeket!
+          </small>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button [mat-dialog-close]="false" class="btn btn-secondary mr-4" data-dismiss="modal" type="button">Mégse
+      </button>
+      <button (click)="onSubmitByUser()" [disabled]="userBookingForm.invalid" cdkFocusInitial
+              class="btn btn-primary mr-4"
+              type="button">
+        Fizetés
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!--HOTEL TULAJDONOS FOGLALÁSA -->
+
+<div *ngIf="bookingStatus==='hotelOwnerBooking'" class="modal-dialog modal-lg modal-dialog-scrollable"
+     style="margin:0; padding:0; width: 100%; height: 100%; max-width: 100%; max-height: 100%">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3 class="modal-title">Foglalás véglegesítése</h3>
+      <button [mat-dialog-close]="false" aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <h4>{{data.hotel.name}} - {{data.hotel.hotelType}}</h4>
+      cím: {{data.hotel.postalCode}} {{data.hotel.city}}, {{data.hotel.streetAddress}}<br>
+      foglalás kezdete: {{data.firstStartDate.toLocaleDateString('hu-HU', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long'
+    })}}<br>
+      foglalás vége: {{data.lastEndDate.toLocaleDateString('hu-HU', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      weekday: 'long'
+    })}}<br>
+      foglalás ára: {{this.priceOfBooking.toLocaleString('hu-HU')}} Ft<br>
+      <br>
+
+      <form [formGroup]="hotelOwnerBookingForm">
+        <table class="table table-sm table-borderless">
+          <thead class="thead-light">
+          <tr>
+            <th>Vendég adatai:</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>
+              <div class="form-group mb-0">
+                <label class="form-control-label" for="firstname">
+                  <strong>Vezetéknév <a> *</a> </strong>
+                </label>
+                <input [ngClass]="{'is-invalid': hotelOwnerBookingForm.get('firstname').invalid && hotelOwnerBookingForm.get('firstname').touched
+                    || hotelOwnerBookingForm.get('firstname').errors?.serverError}" class="form-control"
+                       formControlName="firstname" id="firstname" name="firstname"
+                       placeholder="Vezetéknév"
+                       type="text"/>
+                <small
+                  *ngIf="hotelOwnerBookingForm.get('firstname').invalid && hotelOwnerBookingForm.get('firstname').touched && !hotelOwnerBookingForm.get('firstname').errors?.serverError"
+                  class="text-danger">
+                  Kérlek add meg a vendég vezetéknevét!
+                </small>
+                <small *ngIf="hotelOwnerBookingForm.get('firstname').errors?.serverError" class="text-danger">
+                  {{hotelOwnerBookingForm.get('firstname').errors['serverError']}}
+                </small>
+              </div>
+            </td>
+
+            <td>
+              <div class="form-group mb-0">
+                <label class="form-control-label" for="lastname">
+                  <strong> Utónév <a> *</a> </strong>
+                </label>
+                <input [ngClass]="{'is-invalid': hotelOwnerBookingForm.get('lastname').invalid && hotelOwnerBookingForm.get('lastname').touched
+                    || hotelOwnerBookingForm.get('lastname').errors?.serverError}" class="form-control"
+                       formControlName="lastname" id="lastname" name="lastname"
+                       placeholder="Utónév"
+                       type="text"/>
+                <small
+                  *ngIf="hotelOwnerBookingForm.get('lastname').invalid && hotelOwnerBookingForm.get('lastname').touched && !hotelOwnerBookingForm.get('lastname').errors?.serverError"
+                  class="text-danger">
+                  Kérlek add meg a vendég utónevét!
+                </small>
+                <small *ngIf="hotelOwnerBookingForm.get('lastname').errors?.serverError" class="text-danger">
+                  {{hotelOwnerBookingForm.get('lastname').errors['serverError']}}
+                </small>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td colspan="2">
+            <div class="form-group mb-0">
+              <label class="form-control-label" for="address">
+                <strong>Cím <a> *</a> </strong>
+              </label>
+              <input [ngClass]="{'is-invalid': hotelOwnerBookingForm.get('address').invalid && hotelOwnerBookingForm.get('address').touched
+                    || hotelOwnerBookingForm.get('address').errors?.serverError}" class="form-control"
+                     formControlName="address"
+                     id="address" name="address"
+                     placeholder="Cím"
+                     type="text"/>
+              <small
+                *ngIf="hotelOwnerBookingForm.get('address').invalid && hotelOwnerBookingForm.get('address').touched && !hotelOwnerBookingForm.get('address').errors?.serverError"
+                class="text-danger">
+                Kérlek add meg a vendég címét!
+              </small>
+              <small *ngIf="hotelOwnerBookingForm.get('address').errors?.serverError" class="text-danger">
+                {{hotelOwnerBookingForm.get('address').errors['serverError']}}
+              </small>
+            </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="form-group">
+                <label class="form-control-label" for="email">
+                  <strong>Email cím <a> *</a></strong>
+                </label>
+                <input [ngClass]="{'is-invalid': hotelOwnerBookingForm.get('email').invalid && hotelOwnerBookingForm.get('email').touched
+                    || hotelOwnerBookingForm.get('email').errors?.serverError}" class="form-control"
+                       formControlName="email"
+                       id="email" name="email"
+                       placeholder="xy@z.com"
+                       type="text"/>
+                <small
+                  *ngIf="hotelOwnerBookingForm.get('email').invalid && hotelOwnerBookingForm.get('email').touched && !hotelOwnerBookingForm.get('email').errors?.serverError"
+                  class="text-danger">
+                  Kérlek add meg a vendég email címét!
+                </small>
+                <small *ngIf="hotelOwnerBookingForm.get('email').errors?.serverError" class="text-danger">
+                  {{hotelOwnerBookingForm.get('email').errors['serverError']}}
+                </small>
+              </div>
+            </td>
+
+            <td>
+              <div class="form-group">
+                <label class="form-control-label" for="numberOfGuests">
+                  <strong>Vendégek száma <a> *</a></strong>
+                </label>
+                <input [ngClass]="{'is-invalid': hotelOwnerBookingForm.get('numberOfGuests').invalid && hotelOwnerBookingForm.get('numberOfGuests').touched
+                    || hotelOwnerBookingForm.get('numberOfGuests').errors?.serverError}" class="form-control"
+                       formControlName="numberOfGuests"
+                       id="numberOfGuests" name="numberOfGuests"
+                       type="number"/>
+                <small
+                  *ngIf="hotelOwnerBookingForm.get('numberOfGuests').invalid && hotelOwnerBookingForm.get('numberOfGuests').touched && !hotelOwnerBookingForm.get('numberOfGuests').errors?.serverError"
+                  class="text-danger">
+                  Kérlek add meg a vendégek számát!
+                </small>
+                <small *ngIf="hotelOwnerBookingForm.get('numberOfGuests').errors?.serverError" class="text-danger">
+                  {{hotelOwnerBookingForm.get('numberOfGuests').errors['serverError']}}
+                </small>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+
+        <table class="table table-sm">
+          <thead class="thead-light">
+          <tr>
+            <th>Lefoglalt szobák:</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let roomReservation of data.roomReservationList">
+            <td>
+              <h6 style="display: inline;">{{ roomReservation.room.roomName }}- {{ roomReservation.room.roomType }}</h6>
+              (Férőhelyek: {{ roomReservation.room.numberOfBeds }})
+              <br>
+              foglalás kezdete: {{roomReservation.startDate.toLocaleDateString('hu-HU')}}
+              vége: {{roomReservation.endDate.toLocaleDateString('hu-HU')}}
+              éjszakák száma: {{roomReservation.numberOfNights}}
+            </td>
+            <td class="text-right">
+              ár/éjszaka: {{ roomReservation.room.pricePerNight.toLocaleString('hu-HU') }} Ft
+              <br>
+              teljes
+              ár: {{ (roomReservation.numberOfNights * roomReservation.room.pricePerNight).toLocaleString('hu-HU')}} Ft
+            </td>
+          </tr>
+          <tr>
+            <td><h6>Fizetendő összesen:</h6></td>
+            <td class="text-right">
+              <h6> {{this.priceOfBooking.toLocaleString('hu-HU')}} Ft</h6>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <div class="form-group">
+          <label class="form-control-label" for="remark">
+            Vendég különleges kérése:
+          </label>
+          <textarea
+            class="form-control"
+            formControlName="hotelOwnerRemark"
+            id="hotelOwnerRemark"
+            name="hotelOwnerRemark"
+            rows="5"
+            type="text"
+          ></textarea>
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button [mat-dialog-close]="false" class="btn btn-secondary mr-4" data-dismiss="modal" type="button">Mégse
+      </button>
+      <button (click)="onSubmitByHotelOwner()" [disabled]="hotelOwnerBookingForm.invalid" cdkFocusInitial
+              class="btn btn-primary mr-4"
+              type="button">
+        Mentés
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!--FOGLALÁS VISSZAIGAZOLÁSA-->
+
+<div *ngIf="bookingStatus==='created'" class="modal-dialog modal-lg modal-dialog-scrollable"
+     style="margin:0; padding:0; width: 100%; height: 100%; max-width: 100%; max-height: 100%">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3 class="modal-title">Foglalás visszaigazolása</h3>
+      <button [mat-dialog-close]="true" aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <h5> Gratulálunk! Sikeres foglalás!</h5>
+      <h5> Vendég adtai:</h5>
+      Email cím: {{this.bookingDetails.guest.username}}<br>
+      Vezetéknév: {{this.bookingDetails.guest.lastname}}<br>
+      Keresztnév: {{this.bookingDetails.guest.firstname}}<br>
+      Lakcím: {{this.bookingDetails.guest.address}}<br>
+      Kérés/megjegyzés: {{this.bookingDetails.remark}}<br>
+      <br>
+      <h5> A foglalás adtai:</h5>
+      fogalás azonosítója: {{this.bookingDetails.id}}<br>
+      szállás: {{this.bookingDetails.hotel.name}} - {{this.bookingDetails.hotel.hotelType}}<br>
+      cím: {{this.bookingDetails.hotel.postalCode}} {{this.bookingDetails.hotel.city}}
+      , {{this.bookingDetails.hotel.streetAddress}}<br>
+      vendégek száma: {{this.bookingDetails.numberOfGuests}} fő<br>
+      foglalás ára: {{this.bookingDetails.priceOfBooking.toLocaleString('hu-HU')}} Ft<br>
+      <br>
+
+      <table class="table table-sm">
+        <thead class="thead-light">
+        <tr>
+          <th>Lefoglalt szobák:</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let roomReservation of this.bookingDetails?.roomReservationList">
+          <td>
+            <h6 style="display: inline;">{{ roomReservation.room.roomName }} - {{ roomReservation.room.roomType }}</h6>
+            (Férőhelyek: {{ roomReservation.room.numberOfBeds }})
+            <br>
+            foglalás kezdete: {{roomReservation.startDate.toLocaleDateString('hu-HU')}}
+            vége: {{roomReservation.endDate.toLocaleDateString('hu-HU')}}
+            éjszakák száma: {{roomReservation.numberOfNights}}
+          </td>
+          <td class="text-right">
+            ár/éjszaka: {{ roomReservation.room.pricePerNight.toLocaleString('hu-HU') }} Ft
+            <br>
+            szoba teljes
+            ár: {{ (roomReservation.numberOfNights * roomReservation.room.pricePerNight).toLocaleString('hu-HU')}} Ft
+          </td>
+        </tr>
+        <tr>
+          <td><h6>Végösszeg:</h6></td>
+          <td class="text-right"><h6> {{this.priceOfBooking.toLocaleString('hu-HU')}}
+            Ft</h6></td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <div class="modal-footer">
+      <button (click)="closeDialog(true)" [mat-dialog-close]="true" cdkFocusInitial class="btn btn-primary mr-4"
+              type="button">
+        OK
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!--FOGLALÁS MEGHIÚSULT-->
+
+<div *ngIf="bookingStatus==='failed'" class="modal-dialog modal-lg modal-dialog-scrollable"
+     style="margin:0; padding:0; width: 100%; height: 100%; max-width: 100%; max-height: 100%">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3 class="modal-title">Sikertelen foglalás!</h3>
+      <button [mat-dialog-close]="false" aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+
+      <h5> Sajnos sikertelen foglalás!</h5>
+      <p>Valamilyen rendszer hiba történt vagy időközben lefoglalták a szobákat.</p>
+
+    </div>
+
+    <div class="modal-footer">
+      <button [mat-dialog-close]="false" class="btn btn-secondary mr-4" data-dismiss="modal" type="button">
+        OK
+      </button>
+    </div>
+
+  </div>
+</div>

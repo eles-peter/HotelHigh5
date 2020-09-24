@@ -1,0 +1,78 @@
+<div class="modal-dialog modal-lg modal-dialog-scrollable"
+     style="margin:0; padding:0; width: 100%; height: 100%; max-width: 100%; max-height: 100%">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 class="modal-title">Bejelentkezés</h3>
+      <button [mat-dialog-close]="false" aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+
+    <div class="modal-body">
+
+      <form [formGroup]="loginForm" action="" id="loginMember" method="post" role="form">
+        <div class="form-group">
+          <label class="form-control-label" for="email">
+            <strong>Email cím</strong>
+          </label>
+          <input [ngClass]="{'is-invalid': loginForm.get('email').touched && loginForm.get('email').invalid
+                    || loginForm.get('email').errors?.serverError}" class="form-control" formControlName="email"
+                 id="email" name="email"
+                 placeholder="xy@z.com"
+                 type="text"/>
+          <small
+            *ngIf="loginForm.get('email').invalid && loginForm.get('email').touched && !loginForm.get('email').errors?.serverError"
+            class="text-danger">
+            Kérlek írd be az email címed!
+          </small>
+          <small *ngIf="loginForm.get('email').errors?.serverError" class="text-danger">
+            {{loginForm.get('email').errors['serverError']}}
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-control-label" for="password">
+            <strong>Jelszó</strong>
+          </label>
+          <input [ngClass]="{'is-invalid': loginForm.get('password').invalid && loginForm.get('password').touched
+                    || loginForm.get('password').errors?.serverError}" class="form-control" formControlName="password"
+                 id="password" name="password"
+                 placeholder="Jelszó"
+                 type="password"/>
+          <small
+            *ngIf="loginForm.get('password').invalid && loginForm.get('password').touched && !loginForm.get('password').errors?.serverError"
+            class="text-danger">
+            Kérlek írd be a jelszavad!
+          </small>
+          <small *ngIf="loginForm.get('password').errors?.serverError" class="text-danger">
+            {{loginForm.get('password').errors['serverError']}}
+          </small>
+          <div class="float-right">
+            <a class="pwd-forget pr-0 mr-0 text-right" href="javascript:void(0)" id="open_forgotPassword">Elfelejtetted
+              jelszavad?</a>
+          </div>
+        </div>
+        <br>
+
+        <div class="text-center">
+
+          <button (click)="doLogin()" [disabled]="loginForm.invalid" [mat-dialog-close]="true"
+                  cdkFocusInitial class="btn btn-success pr-5 pl-5"
+                  name="submit" type="submit" value="1">Belépés
+          </button>
+
+        </div>
+
+      </form>
+
+
+      <div *ngIf="data.openedBy==='BookingButton'" class="col-form-label-sm text-center">
+        <p style="font-size: 1rem; margin-bottom: 0">Ha még nem regisztráltál:
+          <a (click)="doRegistration()" style="cursor: pointer; color: #007bff; font-weight: 400">Regisztráció</a></p>
+      </div>
+
+
+    </div>
+  </div>
+</div>

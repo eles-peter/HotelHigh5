@@ -1,0 +1,14 @@
+.nav-bk2 {
+  background: #23074d;
+  background: -webkit-linear-gradient(to right, #cc5333, #23074d);
+  background: linear-gradient(to right, #cc5333, #23074d);
+
+}
+
+#navbar-logo:hover {
+  opacity: 0.7;
+}
+
+.my-navbar {
+  background-color: #003d33;
+}

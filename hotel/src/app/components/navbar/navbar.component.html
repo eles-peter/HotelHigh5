@@ -1,0 +1,54 @@
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark my-navbar">
+  <a [routerLink]="this.baseRouterLink" class="navbar-brand" id="nav-index">
+    <img id="navbar-logo"
+         src="https://res.cloudinary.com/doaywchwk/image/upload/v1585825631/high_five_logo.png">
+  </a>
+  <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#navbar"
+          aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div id="navbar" class="navbar-collapse collapse">
+    <ul *ngIf="userRole === 'ROLE_USER'" class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item">
+        <a class="nav-link" id="user-bookings" routerLink="/bookings" routerLinkActive="active">Foglalásaim</a>
+      </li>
+    </ul>
+
+    <ul *ngIf="userRole === 'ROLE_HOTELOWNER'" class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item">
+        <a class="nav-link" id="hotel-bookings" routerLink="/admin/hotel/bookings"
+           routerLinkActive="active">Foglalások</a>
+      </li>
+    </ul>
+
+    <ul class="nav navbar-nav ml-auto w-100 justify-content-end">
+      <li class="nav-item dropdown">
+        <a *ngIf="!loggedIn" aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
+           data-toggle="dropdown" id="dropbar" style="cursor: pointer">
+          Regisztráció
+        </a>
+        <div aria-labelledby="dropbar" class="dropdown-menu">
+          <a (click)="doRegistration('asHotel')" *ngIf="!loggedIn" class="dropdown-item" routerLinkActive="active"
+             style="cursor: pointer">Hoteltulajdonos</a>
+          <a (click)="doRegistration('asUser')" *ngIf="!loggedIn" class="dropdown-item" routerLinkActive="active"
+             style="cursor: pointer">Vendég</a>
+        </div>
+      </li>
+
+      <li *ngIf="!loggedIn" class="nav-item">
+        <a (click)="doLogin()" class="nav-link" style="cursor: pointer">Bejelentkezés</a>
+      </li>
+      <li *ngIf="loggedIn" class="nav-item">
+        <a class="nav-link" id="profile" routerLink="/account" routerLinkActive="active"
+           style="align-self: end">Profilom ({{lastname}})</a>
+      </li>
+      <li *ngIf="loggedIn" class="nav-item">
+        <a (click)="logout()" class="nav-link" id="logout-link" style="cursor: pointer">Kilépés</a>
+      </li>
+
+    </ul>
+
+  </div>
+
+</nav>

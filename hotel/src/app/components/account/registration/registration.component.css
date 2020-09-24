@@ -1,0 +1,17 @@
+.mat-dialog-container {
+  padding: 0px !important;
+}
+
+#required {
+  text-align: right;
+  color: #B82012;
+  font-size: 12px;
+}
+
+#redstar {
+  color: #B82012;
+}
+
+#redstars {
+  color: #B82012;
+}

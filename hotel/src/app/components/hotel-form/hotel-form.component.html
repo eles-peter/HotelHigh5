@@ -1,0 +1,171 @@
+<div class="container"
+     style="padding-top: 30px;  margin-left: auto; margin-right: auto; min-height: calc(100vh - 142px);">
+
+  <h2 name="topOfThePage">Hotel adatlap</h2>
+  <hr/>
+  <form [formGroup]="hotelForm">
+    <div class="form-group">
+      <label for="name" class="form-control-label">
+        Szálláshely neve:<a> *</a>
+      </label>
+      <input
+        type="text"
+        id="name"
+        formControlName="name"
+        name="name"
+        placeholder="Szálláshely neve"
+        class="form-control"
+        [ngClass]="{'is-invalid': hotelForm.get('name').invalid && hotelForm.get('name').touched || hotelForm.get('name').errors?.serverError}"
+      />
+      <small
+        *ngIf="hotelForm.get('name').invalid && hotelForm.get('name').touched && !hotelForm.get('name').errors?.serverError"
+        class="text-danger">
+        Kérlek add meg a szálláshely nevét!
+      </small>
+      <small *ngIf="hotelForm.get('name').errors?.serverError" class="text-danger">
+        {{hotelForm.get('name').errors['serverError']}}
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="postalCode" class="form-control-label">
+        Irányítószám:<a> *</a>
+      </label>
+      <input
+        type="text"
+        id="postalCode"
+        formControlName="postalCode"
+        name="postalCode"
+        [ngClass]="{'is-invalid': hotelForm.get('postalCode').invalid && hotelForm.get('postalCode').touched || hotelForm.get('postalCode').errors?.serverError}"
+        class="form-control"
+        placeholder="Irányítószám"
+
+      />
+      <small
+        *ngIf="hotelForm.get('postalCode').invalid && hotelForm.get('postalCode').touched && !hotelForm.get('postalCode').errors?.serverError"
+        class="text-danger">
+        Kérlek add meg az irányítószámot!
+      </small>
+      <small *ngIf="hotelForm.get('postalCode').errors?.serverError" class="text-danger">
+        {{hotelForm.get('postalCode').errors['serverError']}}
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="city" class="form-control-label">
+        Város:<a> *</a>
+      </label>
+      <input
+        type="text"
+        id="city"
+        formControlName="city"
+        name="city"
+        [ngClass]="{'is-invalid': hotelForm.get('city').invalid && hotelForm.get('city').touched || hotelForm.get('city').errors?.serverError}"
+        class="form-control"
+        placeholder="Város"
+      />
+      <small
+        *ngIf="hotelForm.get('city').invalid && hotelForm.get('city').touched && !hotelForm.get('city').errors?.serverError"
+        class="text-danger">
+        Kérlek add meg a várost!
+      </small>
+      <small *ngIf="hotelForm.get('city').errors?.serverError" class="text-danger">
+        {{hotelForm.get('city').errors['serverError']}}
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="streetAddress" class="form-control-label">
+        Cím:<a> *</a>
+      </label>
+      <input
+        type="text"
+        id="streetAddress"
+        formControlName="streetAddress"
+        name="streetAddress"
+        [ngClass]="{'is-invalid': hotelForm.get('streetAddress').invalid && hotelForm.get('streetAddress').touched || hotelForm.get('streetAddress').errors?.serverError}"
+        class="form-control"
+        placeholder="Cím"
+      />
+      <small
+        *ngIf="hotelForm.get('streetAddress').invalid && hotelForm.get('streetAddress').touched && !hotelForm.get('streetAddress').errors?.serverError"
+        class="text-danger">
+        Kérlek add meg a szálláshely címét!
+      </small>
+      <small *ngIf="hotelForm.get('streetAddress').errors?.serverError" class="text-danger">
+        {{hotelForm.get('streetAddress').errors['serverError']}}
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="hotelType" class="form-control-label">
+        Szálláshely típusa:<a> *</a>
+      </label>
+      <select
+        id="hotelType"
+        formControlName="hotelType"
+        name="hotelType"
+        class="form-control"
+        [ngClass]="{'is-invalid': hotelForm.get('hotelType').invalid && hotelForm.get('hotelType').touched || hotelForm.get('hotelType').errors?.serverError}"
+      >
+        <option disabled value="">&#45;&#45; Kérlek válassz egy szálláshely típust! &#45;&#45;</option>
+        <option *ngFor="let hotelType of hotelTypeOption, let i = index"
+                value="{{hotelType.name}}"> {{hotelType.displayName}} </option>
+      </select>
+      <small
+        *ngIf="hotelForm.get('hotelType').invalid && hotelForm.get('hotelType').touched && !hotelForm.get('hotelType').errors?.serverError"
+        class="text-danger">
+        Kérlek add meg a szálláshely típusát!
+      </small>
+      <small *ngIf="hotelForm.get('hotelType').errors?.serverError" class="text-danger">
+        {{hotelForm.get('hotelType').errors['serverError']}}
+      </small>
+    </div>
+
+    <app-hotel-image-manager *ngIf="isUpdate" [hotelIdFromLogin]="hotelIdFromLogin"></app-hotel-image-manager>
+
+    <div class="form-group">
+      <label for="description" class="form-control-label">
+        Rövid leírás:<a> *</a>
+      </label>
+      <textarea
+        rows="10"
+        type="text"
+        id="description"
+        formControlName="description"
+        name="description"
+        [ngClass]="{'is-invalid': hotelForm.get('description').invalid && hotelForm.get('description').touched || hotelForm.get('description').errors?.serverError}"
+        class="form-control"
+        placeholder="Kérlek adj meg egy rövid leírást (min. 500 max. 2000 karakter legyen)!"
+      >
+      </textarea>
+      <small
+        *ngIf="hotelForm.get('description').invalid && hotelForm.get('description').touched && !hotelForm.get('description').errors?.serverError"
+        class="text-danger">
+        Kérlek adj meg egy rövid leírást (min. 500 max. 2000 karakter legyen)!
+      </small>
+      <small *ngIf="hotelForm.get('description').errors?.serverError" class="text-danger">
+        {{hotelForm.get('description').errors['serverError']}}
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label">
+        Hotel szolgáltatások:
+      </label>
+      <div formArrayName="hotelFeatures" *ngFor="let hotelFeatures of hotelFeatureTypeOption; let i = index">
+        <label>
+          <input type="checkbox" [formControlName]="i">
+          {{ hotelFeatures.displayName }}
+        </label>
+      </div>
+      <div><a>* - kötelezően kitöltendő mezők!</a></div>
+    </div>
+
+    <button (click)="onSubmit()" [disabled]="hotelForm.invalid" class="btn btn-success" type="submit">Hotel mentése
+    </button>
+
+  </form>
+  <br>
+  <br>
+</div>

@@ -1,0 +1,73 @@
+<div class="login-popup-wrap new_login_popup">
+  <div class="login-popup-heading text-center">
+    <h3><i aria-hidden="true" class="fa fa-lock"></i> Profil szerkesztés </h3>
+  </div>
+  <br><br>
+  <form [formGroup]="registerForm" action="" id="loginMember" method="post" role="form">
+
+    <div class="form-group">
+      <label class="form-control-label" for="firstname">
+        <strong>Vezetéknév </strong>
+      </label>
+      <input [ngClass]="{'is-invalid': registerForm.get('firstname').invalid && registerForm.get('firstname').touched
+                    || registerForm.get('firstname').errors?.serverError}" class="form-control"
+             formControlName="firstname" id="firstname" name="firstname"
+             type="text"/>
+      <small
+        *ngIf="registerForm.get('firstname').invalid && registerForm.get('firstname').touched && !registerForm.get('firstname').errors?.serverError"
+        class="text-danger">
+        Kérlek add meg a vezetékneved!
+      </small>
+      <small *ngIf="registerForm.get('firstname').errors?.serverError" class="text-danger">
+        {{registerForm.get('firstname').errors['serverError']}}
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="lastname">
+        <strong> Utónév </strong>
+      </label>
+      <input [ngClass]="{'is-invalid': registerForm.get('lastname').invalid && registerForm.get('lastname').touched
+                    || registerForm.get('lastname').errors?.serverError}" class="form-control"
+             formControlName="lastname" id="lastname" name="lastname"
+             type="text"/>
+      <small
+        *ngIf="registerForm.get('lastname').invalid && registerForm.get('lastname').touched && !registerForm.get('lastname').errors?.serverError"
+        class="text-danger">
+        Kérlek add meg az utóneved!
+      </small>
+      <small *ngIf="registerForm.get('lastname').errors?.serverError" class="text-danger">
+        {{registerForm.get('lastname').errors['serverError']}}
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label class="form-control-label" for="address">
+        <strong>Cím </strong>
+      </label>
+      <input [ngClass]="{'is-invalid': registerForm.get('address').invalid && registerForm.get('address').touched
+                    || registerForm.get('address').errors?.serverError}" class="form-control" formControlName="address"
+             id="address" name="address"
+             type="text"/>
+      <small
+        *ngIf="registerForm.get('address').invalid && registerForm.get('address').touched && !registerForm.get('address').errors?.serverError"
+        class="text-danger">
+        Kérlek add meg a címed!
+      </small>
+      <small *ngIf="registerForm.get('address').errors?.serverError" class="text-danger">
+        {{registerForm.get('address').errors['serverError']}}
+      </small>
+      <br>
+    </div>
+    <div class="text-center">
+      <div class="btn-group mr-4">
+        <button (click)="doSaveModifiedAccount()" [disabled]="registerForm.invalid" class="btn btn-success"
+                name="submit" type="submit" value="1">
+          Mentés
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+

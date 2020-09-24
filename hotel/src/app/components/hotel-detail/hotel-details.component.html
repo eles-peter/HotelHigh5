@@ -1,0 +1,282 @@
+<div class="container" style="padding-top: 30px;  margin-left: auto; margin-right: auto;">
+
+  <br>
+
+  <div class="card mb-3">
+    <div class="row no-gutters">
+
+      <div class="col-md-4">
+        <div>
+          <mdb-carousel [isControls]="true" class="carousel slide carousel-fade" [animation]="'fade'">
+            <mdb-carousel-item *ngFor="let imgURL of hotel?.hotelImageUrl">
+              <div class="view w-100">
+                <cl-image [public-id]="getPublicId(imgURL)">
+                  <cl-transformation
+                    height="600"
+                    width="400"
+                    crop="fill">
+                  </cl-transformation>
+                </cl-image>
+                <div class="mask rgba-black-light waves-light" mdbWavesEffect></div>
+              </div>
+            </mdb-carousel-item>
+            <mdb-carousel-item *ngIf="!hotel?.hotelImageUrl[0]">
+              <div class="view w-100">
+                <cl-image [public-id]="getPublicId(null)" width="100%">
+                  <cl-transformation
+                    height="600"
+                    width="400"
+                    crop="fill">
+                  </cl-transformation>
+                </cl-image>
+                <div class="mask rgba-black-light waves-light" mdbWavesEffect></div>
+              </div>
+            </mdb-carousel-item>
+          </mdb-carousel>
+        </div>
+      </div>
+
+      <div class="col-md-8">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-9">
+
+              <h3 class="card-title">{{hotel?.name}} - {{hotel?.hotelType}}</h3>
+              <h5 class="card-subtitle mb-2">
+                Cím: {{hotel?.postalCode}}  {{hotel?.city}}, {{hotel?.streetAddress}}
+              </h5>
+            </div>
+            <div class="col-md-3">
+              <h2 class="text-right"><span class="badge badge-primary">{{hotel?.avgRate}}</span></h2>
+            </div>
+          </div>
+
+          <p class="card-text">
+            Szállás összférőhely: {{hotel?.hotelCapacity}}
+          </p>
+          <p class="card-text">
+            {{ hotel?.description}}
+          </p>
+          <div class="row">
+            <div class="col-md-8">
+
+              <ul class="card-text">
+                <li *ngFor="let hotelFeature of hotel?.hotelFeatures" class="text-muted">
+                  {{ hotelFeature }}
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <div class="d-flex justify-content-end align-items-end h-100">
+
+                <div class="btn-group mr-4" class="text-right">
+                  <button (click)="updateHotel()"
+                          *ngIf="account?.role === 'ROLE_HOTELOWNER' || account?.role === 'ROLE_ADMIN' "
+                          class="btn btn-success">
+                    Hotel szerkesztése
+                  </button>
+                </div>
+                <div class="btn-group mr-4" class="text-right">
+                  <div class="align-bottom">
+                    <br>
+                    <button (click)="backToHotelList()"
+                            *ngIf="account?.role === 'ROLE_USER' || account?.role === 'ROLE_ADMIN' || !account "
+                            class="btn btn-outline-primary">
+                      Vissza a hotel listához
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div *ngIf="account?.role === 'ROLE_HOTELOWNER'">
+    <button (click)="createRoomInHotel()" class="btn btn-primary btn-lg btn-block"
+            type="button">
+      Új szoba hozzáadása
+    </button>
+    <br>
+  </div>
+
+  <form [formGroup]="bookingForm" class="needs-validation" novalidate>
+    <div *ngIf="account?.role === 'ROLE_USER' || !account" class="card bg-light mb-3">
+      <div class="card-body">
+        <div class="form-row">
+          <div class="col-md-4 mb-3">
+            <label for="numberOfGuests" lass="form-control-label">
+              Vendégek száma:&nbsp;&nbsp;
+            </label>
+            <input
+              (change)="actualizeURL()"
+              formControlName="numberOfGuests"
+              id="numberOfGuests"
+              name="numberOfGuests"
+              type="number"
+            />
+            <small
+              *ngIf="bookingForm.get('numberOfGuests').invalid && bookingForm.get('numberOfGuests').touched && !bookingForm.get('numberOfGuests').errors?.serverError"
+              class="text-danger">
+              Kérlek add meg a vendégek számát!
+            </small>
+
+            <small
+              *ngIf="bookingForm.get('numberOfGuests').value > this.maxNumberOfGuest"
+              class="text-danger">
+              Kérlek foglalj több szobát!
+            </small>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <div class="input-group">
+              <label>
+                Utazás időpontja:
+              </label>
+              <div style="white-space: nowrap">
+                <input
+                  style="display: inline-block"
+                  placeholder="Válasz időpontot"
+                  (dateChange)="getFilteredRoomList()"
+                  [satDatepicker]="bookingDateRange"
+                  [matDatepickerFilter]="dateFilter"
+                  formControlName="bookingDateRange"
+                  id="bookingDateRange"
+                  name="bookingDateRange"/>
+                <sat-datepicker #bookingDateRange [rangeMode]="true" style="display: inline-block">
+
+                </sat-datepicker>
+                <sat-datepicker-toggle matSuffix [for]="bookingDateRange"
+                                       style="margin-top: -5px; display: inline-block">
+                </sat-datepicker-toggle>
+              </div>
+              <small
+                *ngIf="bookingForm.get('bookingDateRange').invalid && bookingForm.get('bookingDateRange').touched && !bookingForm.get('bookingDateRange').errors?.serverError"
+                class="text-danger">
+                <br>
+                Kérlek válasz időpontot!
+              </small>
+
+            </div>
+          </div>
+
+          <div class="col-md-4 mb-3">
+            <div class="input-group">
+              <button (click)="makeBooking()"
+                      [disabled]="bookingForm.invalid || bookingForm.get('numberOfGuests').value > this.maxNumberOfGuest"
+                      class="btn btn-warning mr-4">Foglalás
+              </button>
+
+              <h5 *ngIf="priceOfBooking" class="align-text-bottom"> Ár: {{ priceOfBooking.toLocaleString('hu-HU') }}
+                Ft </h5>
+              <small
+                *ngIf="bookingForm.get('roomIdList').invalid && bookingForm.get('roomIdList').touched && !bookingForm.get('roomIdList').errors?.serverError"
+                class="text-danger">
+                Kérlek válasz szobát!
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <form [formGroup]="filterForm">
+          <div>
+            <span (click)="resetFilters()" class="badge badge-secondary mr-2" id="redstar"
+                  style="cursor: pointer">X</span>
+            <label>
+              Szoba szolgáltatás szűrések törlése
+            </label>
+          </div>
+          <div class="form-group">
+            <div *ngFor="let roomFeatures of roomFeatureTypeOption; let i = index" class="form-check form-check-inline"
+                 formArrayName="roomFeatures">
+              <input (change)="getFilteredRoomList()" [formControlName]="i" class="form-check-input"
+                     style="cursor: pointer" type="checkbox">
+              <label class="form-check-label">
+                {{ roomFeatures?.displayName }}
+              </label>
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+    <div *ngIf="account?.role === 'ROLE_USER' || !account">
+      <h4 *ngIf="hotel?.rooms.length !==0">
+        Szabad szobák:
+      </h4>
+      <h5 *ngIf="hotel?.rooms.length === 0">
+        Sajnos a megadott időszakban nincs a keresésnek megfelelő szabad szobánk!
+      </h5>
+    </div>
+
+    <div *ngFor="let room of hotel?.rooms; let i = index" formArrayName="roomIdList">
+      <div class="card mb-3">
+        <div class="row no-gutters">
+          <div class="col-md-4">
+            <cl-image [public-id]="getPublicId(room.roomImageUrl)" width="100%">
+              <cl-transformation
+                height="230"
+                width="360"
+                crop="fill">
+              </cl-transformation>
+            </cl-image>
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title">{{ room.roomName }} - {{ room.roomType }}</h5>
+              <h6 class="card-subtitle mb-2">
+                Ágyak (férőhelyek) száma: {{ room.numberOfBeds }} - Szobaterület: {{ room.roomArea }} m2 - Ár/éj
+                : {{ room.pricePerNight.toLocaleString('hu-HU') }} Ft
+              </h6>
+
+              <p class="card-text">
+                {{ room.description}}
+              </p>
+
+              <p class="card-text">
+                <small *ngFor="let roomFeature of room.roomFeatures" class="text-muted">
+                  &#9679;{{ roomFeature }} &shy;
+                </small>
+              </p>
+              <div class="btn-toolbar" class="text-right" role="toolbar">
+
+                <div *ngIf="account?.role === 'ROLE_HOTELOWNER' || account?.role === 'ROLE_ADMIN'"
+                     class="btn-group mr-4">
+                  <button (click)="roomDetail(room.id)" class="btn btn-primary btn-sm">
+                    Szoba adatai/foglalások
+                  </button>
+                </div>
+                <div *ngIf="account?.role === 'ROLE_HOTELOWNER' || account?.role === 'ROLE_ADMIN'"
+                     class="btn-group mr-4">
+                  <button (click)="updateRoom(room.id)" class="btn btn-secondary btn-sm">Szoba szerkesztése
+                  </button>
+                  <button (click)="deleteRoom(room.id)" class="btn btn-danger btn-sm">törlése</button>
+                </div>
+
+                <label *ngIf="account?.role === 'ROLE_USER' || !account">
+                  Lefoglalom&nbsp;
+                  <input (change)="getPriceOfBookingAndMaxCapacity()" [formControlName]="i"
+                         style="width: 18px; height: 18px; cursor: pointer"
+                         type="checkbox">
+                </label>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <br>
+
+</div>
+
+
+

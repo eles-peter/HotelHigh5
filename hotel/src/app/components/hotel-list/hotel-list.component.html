@@ -1,0 +1,201 @@
+
+
+<div class="sidenav">
+  <agm-map [latitude]="mapCenter.latitude" [longitude]="mapCenter.longitude"
+            [fitBounds]="mapBounds">
+
+    <agm-overlay *ngFor="let hotel of hotelList"
+                 [latitude]="hotel?.latitude"
+                 [longitude]="hotel?.longitude">
+      <div class="popup-container">
+        <div class="popup-bubble-anchor" [style.background-color::after]="hoveredHotelId == hotel.id ? '#007bff' : 'white'"
+             (click)="goToHotel(hotel.id)">
+          <div class="popup-bubble" [ngClass]="hoveredHotelId == hotel.id ? 'popup-bubble-hovered': 'popup-bubble'">
+            <b style="font-size: 0.8rem">{{hotel?.bestPricePerNightPerPerson.toLocaleString('hu-HU')}} Ft/fő/éj</b>
+          </div>
+        </div>
+        <div class="popup-bubble-anchor-after" [ngClass]="hoveredHotelId == hotel.id ? 'popup-bubble-anchor-after-hovered': 'popup-bubble-anchor-after'"></div>
+      </div>
+    </agm-overlay>
+
+  </agm-map>
+</div>
+
+<div style="width: 62%">
+  <div class="container" style="padding-top: 30px; padding-left: 25px; margin-left: auto; margin-right: auto;">
+
+    <form [formGroup]="filterForm">
+
+      <div class="card bg-light mb-3">
+        <div class="card-body">
+          <div class="d-flex flex-wrap justify-content-between">
+            <div class="col-md-4 mb-3">
+              <label for="numberOfGuests" class="form-control-label">
+                Vendégek száma:&nbsp;&nbsp;
+              </label>
+              <input
+                formControlName="numberOfGuests"
+                id="numberOfGuests"
+                name="numberOfGuests"
+                type="number"
+              />
+              <small
+                *ngIf="filterForm.get('numberOfGuests').invalid && filterForm.get('numberOfGuests').touched && !filterForm.get('numberOfGuests').errors?.serverError"
+                class="text-danger">
+                Kérlek add meg a vendégek számát!
+              </small>
+
+            </div>
+
+            <div class="col-md-4 mb-3">
+
+              <div class="input-group">
+
+                <label for="bookingDateRange" class="form-control-label">
+                  Utazás időpontja:&nbsp;&nbsp;
+                </label>
+                <div>
+                  <input
+                    placeholder="Válasz időpontot"
+                    [satDatepicker]="bookingDateRange"
+                    [matDatepickerFilter]="dateFilter"
+                    formControlName="bookingDateRange"
+                    id="bookingDateRange"
+                    name="bookingDateRange"/>
+                  <sat-datepicker #bookingDateRange [rangeMode]="true">
+                  </sat-datepicker>
+                  <sat-datepicker-toggle [for]="bookingDateRange"
+                                         style="float: right; margin-top: -5px "></sat-datepicker-toggle>
+                </div>
+                <small
+                  *ngIf="filterForm.get('bookingDateRange').invalid && filterForm.get('bookingDateRange').touched && !filterForm.get('bookingDateRange').errors?.serverError"
+                  class="text-danger">
+                  Kérlek válasz időpontot!
+                </small>
+
+              </div>
+
+            </div>
+
+            <div class="col-md-4 mb-3 text-right align-text-bottom" style="vertical-align: bottom">
+
+              <button (click)="filterHotelList()" class="btn btn-primary mr-4" style="vertical-align: bottom">
+                Keresés
+              </button>
+              <button (click)="backToHotelList()" class="btn btn-outline-primary mr-4">
+                Teljes lista
+              </button>
+
+            </div>
+          </div>
+
+          <hr>
+
+          <div>
+          <span (click)="resetFilters()" class="badge badge-secondary mr-2" id="redstar"
+                style="cursor: pointer">X</span>
+            <label>
+              Szoba szolgáltatás szűrések törlése
+            </label>
+          </div>
+          <div class="form-group">
+            <div *ngFor="let hotelFeatures of hotelFeatureTypeOption; let i = index"
+                 class="form-check form-check-inline"
+                 formArrayName="hotelFeatures">
+              <input [formControlName]="i" class="form-check-input" style="cursor: pointer" type="checkbox">
+              <label class="form-check-label">
+                {{ hotelFeatures?.displayName }}
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </form>
+
+
+    <br>
+
+    <div id={{hotel.id}} *ngFor="let hotel of hotelList" class="card mb-3 border-right-0 border-bottom-0 border-left-0"
+    (mouseenter)="setHoveredHotelId(hotel.id)"
+    (mouseleave)="unsetHoveredHotelId(hotel.id)">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <cl-image [public-id]="getPublicId(hotel?.hotelImageUrl)" width="100%" (click)="hotelDetail(hotel.id)"
+                    style="cursor: pointer">
+            <cl-transformation
+              height="230"
+              width="360"
+              crop="fill">
+            </cl-transformation>
+          </cl-image>
+        </div>
+        <div class="col-md-8">
+          <div class="card-body" style="padding-top: 10px;">
+            <div class="card-title">
+              <div class="row">
+                <div class="col-md-9">
+                  <h4 (click)="hotelDetail(hotel.id)" style="cursor: pointer">{{hotel?.name}}
+                    - {{hotel?.hotelType}}</h4>
+                  <h6 class="card-subtitle mb-2">
+                    Address: {{hotel?.postalCode}}  {{hotel?.city}}, {{hotel?.streetAddress}}
+                  </h6>
+                </div>
+                <div class="float-right">
+                  <h4 class="text-right"><span class="badge badge-primary">{{hotel?.avgRate}}</span></h4>
+                  <h5 class="text-right">{{hotel?.bestPricePerNightPerPerson.toLocaleString('hu-HU')}} Ft/fő/éj</h5>
+                </div>
+              </div>
+            </div>
+
+            <p class="card-text" style="margin-top:-10px">
+              {{ hotel?.shortDescription}}
+            </p>
+
+            <div class="btn-group mr-4" class="text-right">
+              <button (click)="hotelDetail(hotel.id)" class="btn btn-outline-primary">Megnézem</button>
+            </div>
+            <div class="btn-toolbar" class="text-right" role="toolbar">
+              <div *ngIf="account?.role === 'ROLE_ADMIN'" class="btn-group">
+                <button (click)="updateHotel(hotel.id)" class="btn btn-secondary btn-sm">Hotel szerkesztése</button>
+                <button (click)="deleteHotel(hotel.id)" class="btn btn-danger btn-sm">Hotel törlése</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <hr style="margin: 0!important">
+
+    <nav *ngIf="pageNumbers" aria-label="...">
+      <ul class="pagination">
+
+        <li [ngClass]="{'disabled': listPageNumber == 0}" class="page-item">
+          <a (click)="onPageNumClick(listPageNumber-1)" aria-label="Previous" class="page-link">
+            <span aria-hidden="true" style="cursor: pointer">&laquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+
+        <li *ngFor="let pageNumber of pageNumbers" [ngClass]="{'active': pageNumber == listPageNumber}"
+            class="page-item">
+          <a (click)="onPageNumClick(pageNumber)" class="page-link" style="cursor: pointer">{{pageNumber + 1}}<span
+            *ngIf="pageNumber == listPageNumber" class="sr-only">(current)</span></a>
+        </li>
+
+        <li [ngClass]="{'disabled': listPageNumber == pageNumbers?.length-1}" class="page-item">
+          <a (click)="onPageNumClick(listPageNumber+1)" aria-label="Previous" class="page-link">
+            <span aria-hidden="true" style="cursor: pointer">&raquo;</span>
+            <span class="sr-only">Previous</span>
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+  </div>
+
+  <br>
+
+</div>

@@ -1,0 +1,63 @@
+<div class="container"
+     style="padding-top: 30px;  margin-left: auto; margin-right: auto; min-height: calc(100vh - 142px);">
+
+  <ul class="nav nav-pills nav-justified" id="pills-tab" role="tablist">
+
+    <li class="nav-item">
+      <a aria-controls="pills-actual" aria-selected="true" class="nav-link active" data-toggle="pill"
+         href="#pills-actual" id="pills-actual-tab" role="tab">Aktuális foglalások</a>
+    </li>
+
+    <li class="nav-item">
+      <a aria-controls="pills-future" aria-selected="false" class="nav-link" data-toggle="pill" href="#pills-future"
+         id="pills-future-tab" role="tab">Későbbi foglalások</a>
+    </li>
+
+    <li class="nav-item">
+      <a aria-controls="pills-past" aria-selected="false" class="nav-link" data-toggle="pill" href="#pills-past"
+         id="pills-past-tab" role="tab">Korábbi foglalások</a>
+    </li>
+
+    <li class="nav-item">
+      <a aria-controls="pills-search" aria-selected="false" class="nav-link" data-toggle="pill" href="#pills-search"
+         id="pills-search-tab" role="tab">Keresés</a>
+    </li>
+
+    <li class="nav-item">
+      <a aria-controls="pills-calendar" aria-selected="false" class="nav-link" data-toggle="pill" href="#pills-calendar"
+         id="pills-calendar-tab" role="tab">Naptár nézet</a>
+    </li>
+
+    <li class="nav-item">
+      <a aria-controls="pills-statistics" aria-selected="false" class="nav-link" data-toggle="pill"
+         href="#pills-statistics" id="pills-statistics-tab" role="tab">Kimutatások</a>
+    </li>
+
+  </ul>
+
+  <div class="tab-content" id="pills-tabContent">
+    <div aria-labelledby="pills-actual-tab" class="tab-pane fade show active" id="pills-actual" role="tabpanel">
+      <actual-hotel-bookings [hotelId]="hotelId"></actual-hotel-bookings>
+    </div>
+
+    <div aria-labelledby="pills-future-tab" class="tab-pane fade" id="pills-future" role="tabpanel">
+      <future-hotel-bookings [hotelId]="hotelId"></future-hotel-bookings>
+    </div>
+
+    <div aria-labelledby="pills-past-tab" class="tab-pane fade" id="pills-past" role="tabpanel">
+      <past-hotel-bookings [hotelId]="hotelId"></past-hotel-bookings>
+    </div>
+
+    <div aria-labelledby="pills-search-tab" class="tab-pane fade" id="pills-search" role="tabpanel">coming soon...</div>
+
+    <div aria-labelledby="pills-calendar-tab" class="tab-pane fade" id="pills-calendar" role="tabpanel">
+      <hotel-bookings-calendar [hotelId]="hotelId"></hotel-bookings-calendar>
+    </div>
+
+    <div aria-labelledby="pills-statistics-tab" class="tab-pane fade" id="pills-statistics" role="tabpanel">
+      <hotel-bookings-statistics [hotelId]="hotelId"></hotel-bookings-statistics>
+    </div>
+  </div>
+
+
+</div>

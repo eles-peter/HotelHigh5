@@ -1,0 +1,17 @@
+<div style="display: block; margin-top: 1.5rem">
+  <div class="d-flex justify-content-between">
+    <button (click)="goBack()" class="btn btn-link text-decoration-none" type="button">&nbsp;&laquo;&nbsp;
+    </button>
+    <button (click)="goActual()" class="btn btn-link text-decoration-none" type="button">Aktuális</button>
+    <button (click)="goNext()" class="btn btn-link text-decoration-none" type="button">&nbsp;&raquo;&nbsp;
+    </button>
+  </div>
+  <canvas id="daily-canvas" *ngIf="chartDatasets" mdbChart
+          [chartType]="chartType"
+          [datasets]="chartDatasets"
+          [labels]="chartLabels"
+          [colors]="chartColors"
+          [options]="chartOptions"
+          [legend]="true">
+  </canvas>
+</div>

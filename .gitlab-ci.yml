@@ -1,0 +1,41 @@
+image: maven:3.6.1-jdk-11-slim
+
+stages:
+- build
+- deploy
+
+build-be:
+    stage: build
+    script:
+        - echo "Building Backend"
+        - mvn package -DskipTests=true -q
+    artifacts:
+        expire_in: 1 days
+        paths:
+            - target/project-1.0-SNAPSHOT.jar
+    only: [master]
+
+build-fe:
+    stage: build
+    image: node:10
+    cache:
+        paths:
+          - node_modules/
+    script:
+        - echo "Building Frontend"
+        - cd hotel
+        - npm i --quiet
+        - npm run build --quiet
+    artifacts:
+      expire_in: 1 days
+      paths:
+          - hotel/dist
+    only: [master]
+
+deploy:
+    stage: deploy
+    script:
+        - chmod +x ./deploy.sh
+        - ./deploy.sh
+        
+    

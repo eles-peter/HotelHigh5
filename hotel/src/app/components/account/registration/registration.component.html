@@ -1,0 +1,137 @@
+<div class="modal-dialog modal-lg modal-dialog-scrollable"
+     style="margin:0; padding:0; width: 100%; height: 100%; max-width: 100%; max-height: 100%">
+  <div class="modal-content">
+
+    <div class="modal-header " style="padding-top: 10px; padding-bottom: 6px">
+      <h3 class="modal-title">Regisztráció</h3>
+      <button [mat-dialog-close]="false" aria-label="Close" class="close" data-dismiss="modal" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="login-popup-wrap new_login_popup">
+
+        <form [formGroup]="registerForm" action="" id="loginMember" method="post" role="form">
+          <div class="form-group">
+            <label class="form-control-label" for="firstname">
+              <strong>Vezetéknév <a> *</a> </strong>
+            </label>
+            <input [ngClass]="{'is-invalid': registerForm.get('firstname').invalid && registerForm.get('firstname').touched
+                    || registerForm.get('firstname').errors?.serverError}" class="form-control"
+                   formControlName="firstname" id="firstname" name="firstname"
+                   placeholder="Vezetéknév"
+                   type="text"/>
+            <small
+              *ngIf="registerForm.get('firstname').invalid && registerForm.get('firstname').touched && !registerForm.get('firstname').errors?.serverError"
+              class="text-danger">
+              Kérlek add meg a vezetékneved!
+            </small>
+            <small *ngIf="registerForm.get('firstname').errors?.serverError" class="text-danger">
+              {{registerForm.get('firstname').errors['serverError']}}
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-control-label" for="lastname">
+              <strong> Utónév <a> *</a> </strong>
+            </label>
+            <input [ngClass]="{'is-invalid': registerForm.get('lastname').invalid && registerForm.get('lastname').touched
+                    || registerForm.get('lastname').errors?.serverError}" class="form-control"
+                   formControlName="lastname" id="lastname" name="lastname"
+                   placeholder="Utónév"
+                   type="text"/>
+            <small
+              *ngIf="registerForm.get('lastname').invalid && registerForm.get('lastname').touched && !registerForm.get('lastname').errors?.serverError"
+              class="text-danger">
+              Kérlek add meg az utóneved!
+            </small>
+            <small *ngIf="registerForm.get('lastname').errors?.serverError" class="text-danger">
+              {{registerForm.get('lastname').errors['serverError']}}
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-control-label" for="address">
+              <strong>Cím <a> *</a> </strong>
+            </label>
+            <input [ngClass]="{'is-invalid': registerForm.get('address').invalid && registerForm.get('address').touched
+                    || registerForm.get('address').errors?.serverError}" class="form-control" formControlName="address"
+                   id="address" name="address"
+                   placeholder="Cím"
+                   type="text"/>
+            <small
+              *ngIf="registerForm.get('address').invalid && registerForm.get('address').touched && !registerForm.get('address').errors?.serverError"
+              class="text-danger">
+              Kérlek add meg a címed!
+            </small>
+            <small *ngIf="registerForm.get('address').errors?.serverError" class="text-danger">
+              {{registerForm.get('address').errors['serverError']}}
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-control-label" for="email">
+              <strong>Email cím <a> *</a></strong>
+            </label>
+            <input [ngClass]="{'is-invalid': registerForm.get('email').invalid && registerForm.get('email').touched
+                    || registerForm.get('email').errors?.serverError}" class="form-control" formControlName="email"
+                   id="email" name="email"
+                   placeholder="xy@z.com"
+                   type="text"/>
+            <small
+              *ngIf="registerForm.get('email').invalid && registerForm.get('email').touched && !registerForm.get('email').errors?.serverError"
+              class="text-danger">
+              Kérlek írd be az email címed!
+            </small>
+            <small *ngIf="registerForm.get('email').errors?.serverError" class="text-danger">
+              {{registerForm.get('email').errors['serverError']}}
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-control-label" for="password">
+              <strong>Jelszó <a> *</a> </strong>
+            </label>
+            <input [ngClass]="{'is-invalid': registerForm.get('password').invalid && registerForm.get('password').touched
+                    || registerForm.get('password').errors?.serverError}" class="form-control"
+                   formControlName="password" id="password" name="password"
+                   placeholder="Jelszó"
+                   type="password"/>
+            <small
+              *ngIf="registerForm.get('password').invalid && registerForm.get('password').touched && !registerForm.get('password').errors?.serverError"
+              class="text-danger">
+              Kérlek írd be jelszót!
+            </small>
+            <small *ngIf="registerForm.get('password').errors?.serverError" class="text-danger">
+              {{registerForm.get('password').errors['serverError']}}
+            </small>
+          </div>
+          <div class="col-md-offset-4" id="required">* - kitöltése kötelező!</div>
+          <br>
+
+        </form>
+      </div>
+    </div>
+
+    <div class="modal-footer" style="justify-content: center">
+
+      <button (click)="doRegistrationAsUser()" *ngIf="data.registrationType==='asUser'"
+              [disabled]="registerForm.invalid" cdkFocusInitial
+              class="btn btn-success pl-5 pr-5"
+              name="submit" type="submit" value="1">
+        Mentés
+      </button>
+
+      <button (click)="doRegistrationAsHotelOwner()" *ngIf="data.registrationType==='asHotel'"
+              [disabled]="registerForm.invalid" cdkFocusInitial
+              class="btn btn-success pl-5 pr-5"
+              name="submit" type="submit" value="1">
+        Mentés
+      </button>
+
+    </div>
+
+  </div>
+</div>
+

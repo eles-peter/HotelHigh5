@@ -1,0 +1,31 @@
+<div class="container"
+     style="padding-top: 30px;  margin-left: auto; margin-right: auto; min-height: calc(100vh - 142px);">
+
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+
+    <li class="nav-item">
+      <a aria-controls="home" aria-selected="true" class="nav-link active" data-toggle="tab" href="#actual"
+         id="actual-tab" role="tab">Aktuális és későbbi foglalásaim</a>
+    </li>
+
+    <li class="nav-item">
+      <a aria-controls="profile" aria-selected="false" class="nav-link" data-toggle="tab" href="#past" id="past-tab"
+         role="tab">Korábbi foglalásaim</a>
+    </li>
+
+  </ul>
+  <div class="tab-content" id="myTabContent">
+
+    <div aria-labelledby="actual-tab" class="tab-pane fade show active" id="actual" role="tabpanel">
+      <actual-user-bookings [userId]="userId"></actual-user-bookings>
+    </div>
+
+    <div aria-labelledby="past-tab" class="tab-pane fade" id="past" role="tabpanel">
+      <past-user-bookings [userId]="userId"></past-user-bookings>
+    </div>
+
+  </div>
+</div>
+
+
+

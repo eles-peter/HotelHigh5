@@ -1,0 +1,79 @@
+<br>
+
+<div *ngFor="let currentBooking of currentBookingList"
+     class="card border-danger mb-3">
+  <div class="row no-gutters">
+
+    <div class="col-md-8">
+      <div (click)="bookingDetails(currentBooking.id)" class="card-body" style="cursor: pointer">
+
+        Foglalás -kezdete: <strong style="color: #B82012">{{currentBooking.startDate | date:'y. MMM d. EEEE'}}</strong>
+        -vége: <strong style="color: #B82012">{{currentBooking.endDate | date:'y. MMM d. EEEE'}}</strong><br>
+
+        Szállás neve: <strong>{{currentBooking.hotel.name}}</strong>&nbsp;-
+        <strong>{{currentBooking.hotel.hotelType}}</strong> <br>
+        Szállás címe: {{currentBooking.hotel.postalCode}} {{currentBooking.hotel.city}}
+        , {{currentBooking.hotel.streetAddress}}<br>
+        vendégek száma: {{currentBooking.numberOfGuests}} fő <br>
+        <!--    foglalás ára: {{currentBooking.priceOfBooking.toLocaleString('hu-HU')}} Ft<br>-->
+
+        <ol>
+          <li *ngFor="let room of currentBooking.reservedRooms">
+            <h6 style="display: inline;">{{ room.roomName }} - {{ room.roomType }}</h6>
+            (Férőhelyek: {{ room.numberOfBeds }})
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card-body">
+        <div class="btn-group mr-4" class="text-right">
+          <button (click)="deleteBooking(currentBooking.id)" class="btn btn-primary mr-4 ">
+            Foglalás törlése
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div *ngFor="let futureBooking of futureBookingList"
+     class="card mb-3">
+  <div class="row no-gutters">
+
+    <div class="col-md-8">
+      <div (click)="bookingDetails(futureBooking.id)" class="card-body" style="cursor: pointer">
+
+        Foglalás - kezdete: <strong>{{futureBooking.startDate | date:'y. MMM d. EEEE'}}</strong>
+        - vége: <strong>{{futureBooking.endDate | date:'y. MMM d. EEEE'}}</strong><br>
+
+        Szállás neve: <strong>{{futureBooking.hotel.name}}</strong>&nbsp;-
+        <strong>{{futureBooking.hotel.hotelType}}</strong> <br>
+        Szállás címe: {{futureBooking.hotel.postalCode}} {{futureBooking.hotel.city}}
+        , {{futureBooking.hotel.streetAddress}}<br>
+        vendégek száma: {{futureBooking.numberOfGuests}} fő <br>
+        <!--    foglalás ára: {{futureBooking.priceOfBooking.toLocaleString('hu-HU')}} Ft<br>-->
+
+        <ol>
+          <li *ngFor="let room of futureBooking.reservedRooms">
+            <h6 style="display: inline;">{{ room.roomName }} - {{ room.roomType }}</h6>
+            (Férőhelyek: {{ room.numberOfBeds }})
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card-body">
+        <div class="btn-group mr-4" class="text-right">
+          <button (click)="deleteBooking(futureBooking.id)" class="btn btn-primary mr-4 ">
+            Foglalás törlése
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

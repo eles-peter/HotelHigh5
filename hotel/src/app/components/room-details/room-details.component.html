@@ -1,0 +1,66 @@
+<div class="container"
+     style="padding-top: 30px;  margin-left: auto; margin-right: auto; min-height: calc(100vh - 142px);">
+
+  <br>
+
+  <div class="card mb-3">
+    <div class="row no-gutters">
+
+      <div class="col-md-4">
+        <img [src]="room?.roomImageUrl" *ngIf="room?.roomImageUrl" alt="roomImage" class="card-img">
+      </div>
+
+      <div class="col-md-8">
+        <div class="card-body">
+          <h3 class="card-title">{{room?.roomName}} - {{room?.roomType}}</h3>
+          <h5 class="card-subtitle mb-2">
+            Ágyak (férőhelyek) száma: {{ room.numberOfBeds }} - Szobaterület: {{ room.roomArea }} m2 - Ár/éj
+            : {{ room.pricePerNight }} Ft
+          </h5>
+          <p class="card-text">
+            {{ room.description}}
+          </p>
+          <ul class="card-text">
+            <li *ngFor="let roomFeature of room?.roomFeatures" class="text-muted">
+              {{ roomFeature }}
+            </li>
+          </ul>
+          <div class="btn-toolbar" class="text-right" role="toolbar">
+            <div class="btn-group mr-4">
+              <button (click)="updateRoom(room.id)" class="btn btn-success ">Szoba szerkesztése</button>
+            </div>
+            <div class="btn-group mr-4">
+              <button (click)="backToTheHotel()" class="btn btn-primary ">Vissza a hotelhoz</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a aria-controls="home" aria-selected="true" class="nav-link active" data-toggle="tab" href="#actual"
+         id="actual-tab" role="tab">Aktuális és későbbi foglalások</a>
+    </li>
+    <li class="nav-item">
+      <a aria-controls="profile" aria-selected="false" class="nav-link" data-toggle="tab" href="#past" id="past-tab"
+         role="tab">Korábbi foglalások</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div aria-labelledby="actual-tab" class="tab-pane fade show active" id="actual" role="tabpanel">
+
+      <actual-room-bookings [roomId]="room.id"></actual-room-bookings>
+
+    </div>
+    <div aria-labelledby="past-tab" class="tab-pane fade" id="past" role="tabpanel">
+
+      <past-room-bookings [roomId]="room.id"></past-room-bookings>
+
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,57 @@
+.login-popup-heading > h4 {
+  color: #258b47;
+  font-size: 18px;
+  line-height: 30px;
+}
+
+.new_reg_popup, .new_login_popup {
+  border-radius: 2px;
+  min-height: 332px;
+  width: 500px;
+  margin: 0px auto;
+}
+
+.login-popup-btna {
+  background: #258b47;
+  border: none;
+  border-radius: 25px;
+  color: #fff;
+  display: block;
+  font-size: 18px;
+  height: 60px;
+  line-height: 28px;
+  margin: 10px auto 5px;
+  width: 200px;
+  -webkit-transition: all 700ms ease;
+  -moz-transition: all 700ms ease;
+  -ms-transition: all 700ms ease;
+  -o-transition: all 700ms ease;
+}
+
+.login-popup-btnb {
+  background: #228b8b;
+  border: none;
+  border-radius: 25px;
+  color: #fff;
+  display: block;
+  font-size: 18px;
+  height: 60px;
+  line-height: 28px;
+  margin: 10px auto 5px;
+  width: 200px;
+  -webkit-transition: all 700ms ease;
+  -moz-transition: all 700ms ease;
+  -ms-transition: all 700ms ease;
+  -o-transition: all 700ms ease;
+}
+
+a {
+  color: #B82012;
+  font-size: 18px;
+}
+
+#required {
+  text-align: right;
+  color: #B82012;
+  font-size: 12px;
+}

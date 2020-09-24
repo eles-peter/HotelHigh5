@@ -1,0 +1,71 @@
+<div class="container" style=" width: 100vw; position: relative; left: calc(-50vw + 50%); margin-top: 1.5rem">
+
+  <div class="card" style="display:inline-block">
+    <table style="border: none; margin-left: 0px; margin-right: 1.5rem">
+      <tr style="border: none">
+        <td class="test1" style="border: none"></td>
+        <td class="test1" colspan="29" style="border: none">
+          <div class="d-flex justify-content-between">
+            <button (click)="goBack()" class="btn btn-link text-decoration-none" type="button">&nbsp;&laquo;&nbsp;
+            </button>
+            <button (click)="goActual()" class="btn btn-link text-decoration-none" type="button">Aktuális</button>
+            <button (click)="goNext()" class="btn btn-link text-decoration-none" type="button">&nbsp;&raquo;&nbsp;
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td style="border-left: none; border-top: none; border-bottom: none;">
+        </td>
+        <td *ngFor="let day of this?.dayList"
+            [ngStyle]="{'border-left':day.isToday === true ? '3px solid hsl(0, 100%, 50%)' : '0px'}"
+            [style.background-color]="day.cellBackground"
+            style="text-align: center; font-size: 14px; min-width: 41px" > {{day.weekDayName}} <br> {{day.dayDateString}}
+        </td>
+      </tr>
+
+      <tr *ngFor="let room of this?.roomBookingTable">
+
+        <td style="text-align: right; min-width: 200px; white-space: pre; line-height: 1; padding-left: 7px; padding-right: 5px;
+           border-left: none; border-top: none; border-bottom: none; color: mediumblue; cursor: pointer">
+          <button (click)="roomDetail(room.roomId)" class="btn btn-link text-decoration-none" style="text-align: right"
+                  type="button">{{room?.roomName}}</button>
+        </td>
+
+        <td *ngFor="let day of room?.roomDayList"
+            [ngStyle]="{'border-left':day.isToday === true ? '3px solid hsl(0, 100%, 50%)' : '0px'}"
+            [style.background-color]="day.cellBackground"
+            (mouseenter)="actionMouseEnter(room.roomId, day.cellDate)"
+            (mouseup)="actionMouseUp(day.cellDate)"
+            style="margin: 0; padding: 0; font-size: 0.75rem; text-align: right; vertical-align: top; color: #b6bece">
+
+          <a class="noselect">{{day.cellDate.toLocaleDateString('hu-HU',{day: 'numeric'})}}</a>
+
+          <table style="border: 0px; margin: 0; padding: 0; height: 100%; width: 100%; table-layout: fixed; z-index: 1"
+                 width="100%">
+
+            <td *ngFor="let partOfDay of day.roomDay" style="border: 0; margin: 0; padding: 0; vertical-align: bottom ">
+              <div (dblclick)="bookingDetails(partOfDay.bookingId)"
+                   (mousedown)="actionMouseDown(room.roomId, partOfDay.roomReservationId, day.cellDate)"
+                   [ngClass]="{'blinking': partOfDay.blinking}"
+                   [style.background-color]="partOfDay.color"
+                   [style.border-radius]="partOfDay.borderRadius"
+                   [style.cursor]="partOfDay.cursor"
+                   data-placement="top" data-toggle="tooltip"
+                   style="height: 32px; width: 100%; margin-top: 5px" title="{{partOfDay.tooltip}}">
+                <div class="noselect" style="float: left; z-index: 2; font-size: 0.8rem; margin-left: 0.25rem; color: black; text-align: left; line-height: 1.1">{{partOfDay.reservationText}}</div>
+              </div>
+            </td>
+
+          </table>
+
+        </td>
+
+      </tr>
+    </table>
+    <br>
+  </div>
+</div>
+
+
+
