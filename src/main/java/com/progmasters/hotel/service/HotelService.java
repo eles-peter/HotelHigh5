@@ -8,7 +8,7 @@ import com.progmasters.hotel.repository.HotelRepository;
 import com.progmasters.hotel.repository.RoomRepository;
 import com.progmasters.hotel.repository.RoomReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
@@ -25,20 +26,10 @@ import java.util.stream.Collectors;
 @Transactional
 public class HotelService {
 
-    @Value("${spring.cloudinary.cloud_name}")
-    private static String cloudinaryCloudName;
+    @Autowired
+    private Environment env;
 
-    @Value("${spring.cloudinary.api_key}")
-    private static String cloudinaryApiKey;
-
-    @Value("${spring.cloudinary.api_secret}")
-    private static String cloudinaryApiSecret;
-
-    private static Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-            "cloud_name", cloudinaryCloudName,
-            "api_key", cloudinaryApiKey,
-            "api_secret", cloudinaryApiSecret
-    ));
+    private static Cloudinary cloudinary;
 
     private HotelRepository hotelRepository;
     private RoomRepository roomRepository;
@@ -49,6 +40,15 @@ public class HotelService {
         this.hotelRepository = hotelRepository;
         this.roomRepository = roomRepository;
         this.roomReservationRepository = roomReservationRepository;
+    }
+
+    @PostConstruct
+    public void init() {
+        cloudinary = new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", env.getProperty("spring.cloudinary.cloud_name"),
+                "api_key", env.getProperty("spring.cloudinary.api_key"),
+                "api_secret", env.getProperty("spring.cloudinary.api_secret")
+        ));
     }
 
     public List<Hotel> findAllHotel() {
@@ -222,6 +222,7 @@ public class HotelService {
 
     private String uploadImage(MultipartFile file) {
         String url = null;
+
         try {
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
             url = uploadResult.get("url").toString();
@@ -237,6 +238,21 @@ public class HotelService {
             deleteImageFromCloud(imageURL);
         }
     }
+
+    public void deleteAllImageFromCloudWhereHotelIdMoreThan(Long hotelId) {
+        List<Hotel> hotelList = hotelRepository.findByIdMoreThan(hotelId);
+        if (!hotelList.isEmpty()) {
+            for (Hotel hotel : hotelList) {
+                List<String> hotelImageUrls = hotel.getHotelImageUrls();
+                if (!hotelImageUrls.isEmpty()) {
+                    for (String imageURL : hotelImageUrls) {
+                        deleteImageFromCloud(imageURL);
+                        System.out.println("deleted image URL: "  + imageURL);
+                    }
+                }
+            }
+        }
+     }
 
     private void deleteImageFromCloud(String imageURL) {
         try {

@@ -44,6 +44,7 @@ import {HotelBookingsCalendarComponent} from "./components/hotel-bookings/hotel-
 import {HotelBookingsStatisticsComponent} from "./components/hotel-bookings/hotel-bookings-statistics/hotel-bookings-statistics.component";
 import {NotfoundComponent} from "./components/notfound/notfound.component";
 import {PaginationComponent} from "./components/pagination/pagination.component";
+import {DemoWarningDialogComponent} from "./components/demo-warning-dialog/demo-warning-dialog.component";
 import {AgmCoreModule} from "@agm/core";
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {
@@ -94,6 +95,7 @@ export const cloudinary = {
     FooterComponent,
     NotfoundComponent,
     PaginationComponent,
+    DemoWarningDialogComponent,
 
   ],
     imports: [
@@ -129,6 +131,7 @@ export const cloudinary = {
     BookingDetailDialogComponent,
     LoginComponent,
     RegistrationComponent,
+    DemoWarningDialogComponent
   ]
 })
 export class AppModule {

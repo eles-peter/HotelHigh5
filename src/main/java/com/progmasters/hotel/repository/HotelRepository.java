@@ -68,6 +68,9 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
              @Param("count_of_matches") Long countOfMatches,
              Pageable pageable);
 
+    @Query("SELECT h FROM Hotel h WHERE h.id > :hotelId")
+    List<Hotel> findByIdMoreThan(Long hotelId);
+
     interface HotelFilterResult {
         Hotel getFilteredHotel();
         Double getBestPrice();

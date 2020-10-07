@@ -1,0 +1,48 @@
+<div class="modal-dialog modal-lg modal-dialog-scrollable"
+     style="margin:0; padding:0; width: 100%; height: 100%; max-width: 100%; max-height: 100%">
+  <div class="modal-content">
+
+    <div class="modal-header">
+      <h3 class="modal-title">Figyelmeztetés / Warning</h3>
+    </div>
+
+    <div class="modal-body">
+
+      <h5>Ez egy demo oldal!</h5>
+      Az oldalon semmilyen tényleges szállásfoglalás nem történik.
+      A honlapon szereplő bármilyen adat valósággal való egyezése csak egy webcrawler műve lehet.
+      Az oldalon vendégként (szálláskereső) és hoteltulajdonosként is lehet regisztálni.
+      Vagy használhatóak a már mentett felhasználók:
+      <ul style="margin-top: 4px; margin-bottom: 4px">
+        <li>Vendég (szálláskereső): hotel.high.five.guest@gmail.com / jelszó: guest</li>
+        <li>Hoteltulajdonos: hotel.high.five.user@gmail.com / jelszó: user</li>
+      </ul>
+      A honlapon eszközölt változások (regisztráció, foglalások...) naponta törlődnek!
+      Semmiért semmilyen felelőséget nem vállalunk!
+
+      <br>
+      <br>
+
+      <h5> This is a demo page! </h5>
+      There are no real bookings on the site.
+      The fact that any data on the website matches reality can only be the work of a webcrawler.
+      You can also register as a guest or hotel owner on the site.
+      Or you can use already saved users:
+      <ul style="margin-top: 4px; margin-bottom: 4px">
+        <li> Guest: hotel.high.five.guest@gmail.com / password: guest </li>
+        <li> Hotel owner: hotel.high.five.user@gmail.com / password: user </li>
+      </ul>
+      Changes made on the website (registration, reservations ...) are deleted daily!
+      We do not take any responsibility for anything!
+
+    </div>
+
+    <div class="modal-footer">
+      <button (click)="closeDialog()" [mat-dialog-close]="false" cdkFocusInitial class="btn btn-primary mr-4"
+              type="button">
+        OK
+      </button>
+    </div>
+
+  </div>
+</div>

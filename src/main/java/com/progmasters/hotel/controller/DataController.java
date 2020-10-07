@@ -11,6 +11,7 @@ import com.progmasters.hotel.dto.HotelDataCreatorItem;
 import com.progmasters.hotel.dto.RoomCreateItem;
 import com.progmasters.hotel.repository.HotelRepository;
 import com.progmasters.hotel.repository.RoomRepository;
+import com.progmasters.hotel.service.HotelService;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,9 +42,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/admin/fill-database")
 public class DataController {
     private final HotelRepository hotelRepository;
+    private final HotelService hotelService;
     private final RoomRepository roomRepository;
 
-    private final static String DUMP_SQL_FILE = "hotel-2020_06_03-dump.sql";
+    private final static String DUMP_SQL_FILE = "hotel-2020_10_05-dump.sql";
+    private final static Long MAX_HOTEL_ID = 50L;
 
     @Value("${spring.datasource.url}")
     private String url;
@@ -55,8 +58,9 @@ public class DataController {
     private String password;
 
     @Autowired
-    public DataController(HotelRepository hotelRepository, RoomRepository roomRepository) {
+    public DataController(HotelRepository hotelRepository, HotelService hotelService, RoomRepository roomRepository) {
         this.hotelRepository = hotelRepository;
+        this.hotelService = hotelService;
         this.roomRepository = roomRepository;
     }
 
@@ -145,6 +149,11 @@ public class DataController {
     }
 
     @Scheduled(cron = "0 0 0 * * *")
+    public void restoreData() {
+        hotelService.deleteAllImageFromCloudWhereHotelIdMoreThan(MAX_HOTEL_ID);
+        restoreDatabaseFromBackupWithJDBC();
+    }
+
     public boolean restoreDatabaseFromBackupWithJDBC() {
         File resourceFile = loadFileFromResources(DUMP_SQL_FILE);
         String[] commands = readSQLCommandsFromFile(resourceFile);

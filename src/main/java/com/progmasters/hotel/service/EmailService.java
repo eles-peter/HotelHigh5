@@ -49,21 +49,21 @@ public class EmailService {
     @Async
     public void sendMailAtBooking(Account account) {
         String emailSubject = "Sikeres Foglalás!";
-        String emailText = "Tisztelt " + account.getUsername() + "!\n\n" + "Foglalásod elmentettük, részletei megtalálhatóak a honlapon";
+        String emailText = "Tisztelt " + account.getUsername() + "!\n\n" + "Foglalásod elmentettük, részletei megtalálhatóak a honlapon. \n\n EZ EGY DEMÓ ÜZENET!!! SEMMILYEN TÉNYLEGES FOGLALÁS NEM TÖRTÉNT!!!";
         sendMail(account.getEmail(), emailSubject, emailText);
     }
 
     @Async
     public void sendMailAtDeleteBooking(Account account) {
         String emailSubject = "Foglalás Törölve!";
-        String emailText = "Tisztelt " + account.getUsername() + "!\n\n" + "Foglalásod töröltük az adatbázisból!";
+        String emailText = "Tisztelt " + account.getUsername() + "!\n\n" + "Foglalásod töröltük az adatbázisból! \n\n EZ EGY DEMÓ ÜZENET!!! SEMMILYEN TÉNYLEGES FOGLALÁS TÖRLÉS NEM TÖRTÉNT!!!";
         sendMail(account.getEmail(), emailSubject, emailText);
     }
 
     @Async
     public void sendMailAtBookingByHotelOwner(String email, String firstName, String lastName) {
         String emailSubject = "Sikeres Foglalás!";
-        String emailText = "Tisztelt " + firstName + " " + lastName + "!\n\n" + "Foglalásod elmentettük, részletei megtalálhatóak a honlapon";
+        String emailText = "Tisztelt " + firstName + " " + lastName + "!\n\n" + "Foglalásod elmentettük, részletei megtalálhatóak a honlapon. \n\n EZ EGY DEMÓ ÜZENET!!! SEMMILYEN TÉNYLEGES FOGLALÁS NEM TÖRTÉNT!!!";
         sendMail(email, emailSubject, emailText);
     }
 

@@ -7,6 +7,9 @@ import {LoginService} from "../../services/login.service";
 import {dateToJsonDateString} from "../../utils/dateUtils";
 import {HotelItemForHomePageModel} from "../../models/hotelItemForHomePage.model";
 import {getPublicId} from "../../utils/cloudinaryPublicIdHandler";
+import {MatDialog} from "@angular/material/dialog";
+import {BookingDetailDialogComponent} from "../booking-detail-dialog/booking-detail-dialog.component";
+import {DemoWarningDialogComponent} from "../demo-warning-dialog/demo-warning-dialog.component";
 
 @Component({
   selector: 'app-home',
@@ -25,7 +28,7 @@ export class HomeComponent implements OnInit {
 
   backgroundPosition: string = ' 0px 0px';
 
-  constructor(private hotelService: HotelService, private router: Router, private popupService: PopupService, private loginService: LoginService) {
+  constructor(private hotelService: HotelService, private router: Router, private dialog: MatDialog, private popupService: PopupService, private loginService: LoginService) {
 
     this.filterForm = new FormGroup({
       'numberOfGuests': new FormControl("1",
@@ -50,6 +53,26 @@ export class HomeComponent implements OnInit {
       (response: HotelItemForHomePageModel[]) =>
         this.randomHotelList = response
     );
+    if (!localStorage.getItem('demoWarningIsChecked')) {
+      this.demoWarning();
+    }
+  }
+
+  demoWarning() {
+    let dialogRef = this.dialog.open(DemoWarningDialogComponent, {
+      disableClose: true,
+      height: '600px',
+      width: '850px',
+    });
+    dialogRef.afterClosed().subscribe(
+      response => {
+        this.setDemoWarningIsChecked();
+      }
+    )
+  }
+
+  private setDemoWarningIsChecked() {
+    localStorage.setItem('demoWarningIsChecked', String(true));
   }
 
   filterHotelList() {
@@ -72,10 +95,8 @@ export class HomeComponent implements OnInit {
   getPublicId(imgURL: string) {
     return getPublicId(imgURL);
   }
-
   @HostListener('window:scroll', ['$event'])
   backgroundMoving(event) {
     this.backgroundPosition = ' 0px ' + window.pageYOffset / 1.8 + 'px';
   }
-
 }
