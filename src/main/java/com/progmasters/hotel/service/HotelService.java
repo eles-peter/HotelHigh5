@@ -1,6 +1,7 @@
 package com.progmasters.hotel.service;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.api.ApiResponse;
 import com.cloudinary.utils.ObjectUtils;
 import com.progmasters.hotel.domain.*;
 import com.progmasters.hotel.dto.*;
@@ -247,7 +248,6 @@ public class HotelService {
                 if (!hotelImageUrls.isEmpty()) {
                     for (String imageURL : hotelImageUrls) {
                         deleteImageFromCloud(imageURL);
-                        System.out.println("deleted image URL: "  + imageURL);
                     }
                 }
             }
@@ -256,6 +256,7 @@ public class HotelService {
 
     private void deleteImageFromCloud(String imageURL) {
         try {
+            //TODO megírni több fájl típusra!!! pl.: .webp, .tiff
             cloudinary.uploader().destroy(imageURL.substring(61, imageURL.length() - 4), ObjectUtils.emptyMap());
         } catch (IOException e) {
             e.printStackTrace();
@@ -274,5 +275,61 @@ public class HotelService {
         List<RoomReservation> roomReservations =
                 this.roomReservationRepository.findAllByRoomAndEndDateAfterAndStartDateBefore(room, startDate, enDate);
         return roomReservations.isEmpty();
+    }
+
+    public void deleteUnusedImagesFromCloud() {
+        List<String> usedImagesUrl = getUsedImagesUrl();
+        List<String> cloudinaryImagesUrl = getCloudinaryImagesUrl();
+        List<String> unusedImagesUrl = new ArrayList<>(cloudinaryImagesUrl);
+        unusedImagesUrl.removeAll(usedImagesUrl);
+
+        List<String> otherUsedImagesUrl = new ArrayList<>();
+        otherUsedImagesUrl.add("http://res.cloudinary.com/doaywchwk/image/upload/v1591973849/Akarmi/background_c4qrdl.jpg");
+        otherUsedImagesUrl.add("http://res.cloudinary.com/doaywchwk/image/upload/v1589268435/background.jpg");
+        otherUsedImagesUrl.add("http://res.cloudinary.com/doaywchwk/image/upload/v1585830612/logo_SIGN_s14ohn.png");
+        otherUsedImagesUrl.add("http://res.cloudinary.com/doaywchwk/image/upload/v1585825631/high_five_logo.png");
+        otherUsedImagesUrl.add("http://res.cloudinary.com/doaywchwk/image/upload/v1584571162/image_not_found.png");
+        unusedImagesUrl.removeAll(otherUsedImagesUrl);
+
+        for (String unusedImageUrl : unusedImagesUrl) {
+            deleteImageFromCloud(unusedImageUrl);
+        }
+    }
+
+    public List<String> getCloudinaryImagesUrl() {
+        List<String> cloudinaryImagesUrl = new ArrayList<>();
+        try {
+            boolean isFinished = false;
+            String nextCursor = null;
+
+            while (!isFinished) {
+                ApiResponse resources = cloudinary.api().resources(ObjectUtils.asMap("max_results", 500, "next_cursor", nextCursor));
+                if (resources.containsKey("next_cursor")) {
+                    nextCursor = resources.get("next_cursor").toString();
+                } else {
+                    isFinished = true;
+                }
+                List<Map> resourcesList = (List<Map>) resources.get("resources");
+                for (Map map : resourcesList) {
+                    cloudinaryImagesUrl.add(map.get("url").toString());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cloudinaryImagesUrl;
+    }
+
+    public List<String> getUsedImagesUrl() {
+        List<Hotel> hotelList = hotelRepository.findAll();
+        List<String> usedImages = new ArrayList<>();
+        for (Hotel hotel : hotelList) {
+            List<String> hotelImageUrls = hotel.getHotelImageUrls();
+            usedImages.addAll(hotelImageUrls);
+            for (Room room : hotel.getRooms()) {
+                usedImages.add(room.getRoomImageUrl());
+            }
+        }
+        return usedImages;
     }
 }

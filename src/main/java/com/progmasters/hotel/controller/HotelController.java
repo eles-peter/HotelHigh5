@@ -171,4 +171,10 @@ public class HotelController {
 		return new ResponseEntity<>(imageURLs,HttpStatus.OK);
 	}
 
+	@PostMapping("/deleteUnusedImages")
+	public ResponseEntity<Void> deleteUnusedImagesFromCloud(){
+		hotelService.deleteUnusedImagesFromCloud();
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
 }
