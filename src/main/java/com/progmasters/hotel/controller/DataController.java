@@ -45,7 +45,7 @@ public class DataController {
     private final HotelService hotelService;
     private final RoomRepository roomRepository;
 
-    private final static String DUMP_SQL_FILE = "hotel-2020_10_05-dump.sql";
+    private final static String DUMP_SQL_FILE = "hotel-2020_10_08-dump.sql";
     private final static Long MAX_HOTEL_ID = 50L;
 
     @Value("${spring.datasource.url}")
@@ -186,4 +186,7 @@ public class DataController {
         return queryString.toString().split(";\n");
     }
 
+    public String getDumpSqlFile() {
+        return DUMP_SQL_FILE;
+    }
 }
