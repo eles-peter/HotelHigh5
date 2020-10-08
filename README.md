@@ -1,6 +1,7 @@
 # HotelHigh5
 Online booking applicaton.<br>
 The final task of the PROGmasters education is to create a demo project in an agile team (with product owner, scrum master, manual tester and developers).<br><br>
+[Link to demo page (on AWS)](http://3.14.147.17/)<br><br>
 **Vision:** Creating a collection website for accommodation providers in Budapest, where tourists arriving in Budapest can easily and quickly book accommodation.<br>
 **Mission:** We want to give a market opportunity to smaller accommodation providers who do not understand or do not have the right IT background and expertise.<br>
 **Values:** We believe that with the help of technology, we provide an opportunity in technology catching up and market opportunities for less innovative or more IT backward accommodation providers.<br>
