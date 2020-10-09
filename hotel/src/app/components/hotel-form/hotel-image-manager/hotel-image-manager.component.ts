@@ -21,38 +21,31 @@ export class HotelImageManagerComponent implements OnInit {
 
   }
 
-  // onFileChange(event) {
-  //   if (event.target.value.length > 0) {
-  //     const file: File = event.target.files[0];
-  //     const formData = new FormData();
-  //     formData.append("file", file);
-  //     this.hotelService.uploadImage(formData, this.hotelIdFromLogin).subscribe(
-  //       () => {
-  //       },
-  //       error => console.log(error),
-  //       () => {
-  //         this.hotelService.getHotelImages(this.hotelIdFromLogin).subscribe(
-  //           (response) => this.imageURLs = response
-  //         );
-  //       });
-  //   }
-  // }
-
   onFileChange(event) {
-    // disabled function in demo version!!!
+    if (event.target.value.length > 0) {
+      const file: File = event.target.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+      this.hotelService.uploadImage(formData, this.hotelIdFromLogin).subscribe(
+        () => {
+        },
+        error => console.log(error),
+        () => {
+          this.hotelService.getHotelImages(this.hotelIdFromLogin).subscribe(
+            (response) => this.imageURLs = response
+          );
+        });
+    }
   }
 
   getPublicId(imgURL: string) {
     return getPublicId(imgURL);
   }
 
-  // deleteImage(image: string) {
-  //   this.hotelService.deleteImage(image, this.hotelIdFromLogin).subscribe(
-  //     () => this.ngOnInit()
-  //   )
-  // }
-
   deleteImage(image: string) {
-    // disabled function in demo version!!!
+    this.hotelService.deleteImage(image, this.hotelIdFromLogin).subscribe(
+      () => this.ngOnInit()
+    )
   }
+
 }

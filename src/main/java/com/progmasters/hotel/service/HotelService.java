@@ -36,6 +36,27 @@ public class HotelService {
     private RoomRepository roomRepository;
     private RoomReservationRepository roomReservationRepository;
 
+    //Non deletable images from cloudaniry for hotel id number 1 in demo version
+    private static List<String> NON_DELETABLE_IMAGES_FOR_HOTEL_1 = new ArrayList<>(Arrays.asList(
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1601625348/ghddxdo9mukw56uxsiif.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1601625352/xyqwnet7b0n7pfcgdzfi.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1601625356/fd3qjrwg1aqzwe7sinlr.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1601625361/jqburr9rlhookl8d3kik.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1601625373/qwac71rs3vj4pnkqmdvk.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1601625378/dpsh6ywmznyukbis3wma.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1601625385/rmiseyggbcufsy483bcu.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1601625389/lpwzpyhwgogfejuvzs0n.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1601625393/jv0l55g52mqrgbb1aokd.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1584021123/sy1guk8o0mo2wcys75vq.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1584021124/xhwcici966iuaiqmr07z.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1584021126/g51pvqdxlksd6zdcnsl1.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1584021127/dm6yxmb24u9t4atceqob.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1584021129/cxsskti7j8o1smmbccgb.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1584021131/lncnhnjqkkctrwqrbk9q.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1584021132/tg1b4htcor9545yhhb1n.jpg",
+            "http://res.cloudinary.com/doaywchwk/image/upload/v1584021135/nrm2w5l219e7o3bii6xl.jpg"
+    ));
+
     @Autowired
     public HotelService(RoomRepository roomRepository, HotelRepository hotelRepository, RoomReservationRepository roomReservationRepository) {
         this.hotelRepository = hotelRepository;
@@ -236,7 +257,9 @@ public class HotelService {
     public void deleteHotelImage(String imageURL, Long id) {
         if (hotelRepository.findById(id).isPresent()) {
             hotelRepository.findById(id).get().getHotelImageUrls().remove(imageURL);
-            deleteImageFromCloud(imageURL);
+            if (!NON_DELETABLE_IMAGES_FOR_HOTEL_1.contains(imageURL)) {
+                deleteImageFromCloud(imageURL);
+            }
         }
     }
 
@@ -254,6 +277,14 @@ public class HotelService {
         }
      }
 
+     public void deleteNonOriginalImagesUrlFromCloudAtHotel1() {
+         List<String> nonOriginalImagesUrlFromHotel1 = getNonOriginalImagesUrlFromHotel1();
+         for (String imageURL : nonOriginalImagesUrlFromHotel1) {
+             deleteImageFromCloud(imageURL);
+         }
+
+     }
+
     private void deleteImageFromCloud(String imageURL) {
         try {
             //TODO megírni több fájl típusra!!! pl.: .webp, .tiff
@@ -265,8 +296,9 @@ public class HotelService {
 
     public List<String> getHotelImages(Long id) {
         List<String> hotelImageUrls = null;
-        if (hotelRepository.findById(id).isPresent()) {
-            hotelImageUrls = hotelRepository.findById(id).get().getHotelImageUrls();
+        Optional<Hotel> hotelOptional = hotelRepository.findById(id);
+        if (hotelOptional.isPresent()) {
+            hotelImageUrls = hotelOptional.get().getHotelImageUrls();
         }
         return hotelImageUrls;
     }
@@ -296,7 +328,7 @@ public class HotelService {
         }
     }
 
-    public List<String> getCloudinaryImagesUrl() {
+    private List<String> getCloudinaryImagesUrl() {
         List<String> cloudinaryImagesUrl = new ArrayList<>();
         try {
             boolean hasNext = true;
@@ -320,7 +352,7 @@ public class HotelService {
         return cloudinaryImagesUrl;
     }
 
-    public List<String> getUsedImagesUrl() {
+    private List<String> getUsedImagesUrl() {
         List<Hotel> hotelList = hotelRepository.findAll();
         List<String> usedImages = new ArrayList<>();
         for (Hotel hotel : hotelList) {
@@ -332,4 +364,21 @@ public class HotelService {
         }
         return usedImages;
     }
+
+    private List<String> getNonOriginalImagesUrlFromHotel1() {
+        List<String> imagesUrlInHotel1 = getHotelImages(1L);
+        List<Room> roomsInHotel1 = roomRepository.findAllByHotelId(1L);
+        if (roomsInHotel1 != null) {
+            for (Room room : roomsInHotel1) {
+                String roomImageUrl = room.getRoomImageUrl();
+                if (roomImageUrl != null) {
+                    imagesUrlInHotel1.add(roomImageUrl);
+                }
+            }
+        }
+        imagesUrlInHotel1.removeAll(NON_DELETABLE_IMAGES_FOR_HOTEL_1);
+        return imagesUrlInHotel1;
+    }
+
+
 }

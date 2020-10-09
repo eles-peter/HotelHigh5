@@ -1,11 +1,7 @@
 
 <div class="content-container">
 
-  <button type=button disabled (click)="fileInput.click()" class="btn btn-primary btn-sm">Add Image</button>
-
-  <span class="text-danger">
-  &nbsp; (Ez a funkció le van tiltva demó módban! This function is disabled in demo mode!)
-  </span>
+  <button type=button (click)="fileInput.click()" class="btn btn-primary btn-sm">Add Image</button>
 
   <input style="display: none" type="file" accept="image/*" (change)="onFileChange($event)" #fileInput>
   <hr>
@@ -22,7 +18,7 @@
         </cl-image>
       </div>
       <div style=" margin-left: auto; margin-right: auto; margin-top: 5px">
-        <button disabled (click)="deleteImage(image)" class="btn btn-danger btn-sm">Delete</button>
+        <button (click)="deleteImage(image)" class="btn btn-danger btn-sm">Delete</button>
       </div>
     </li>
   </ul>

@@ -151,6 +151,7 @@ public class DataController {
     @Scheduled(cron = "0 0 0 * * *")
     public void restoreData() {
         hotelService.deleteAllImageFromCloudWhereHotelIdMoreThan(MAX_HOTEL_ID);
+        hotelService.deleteNonOriginalImagesUrlFromCloudAtHotel1();
         restoreDatabaseFromBackupWithJDBC();
     }
 

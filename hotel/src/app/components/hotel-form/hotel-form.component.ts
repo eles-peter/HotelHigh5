@@ -147,6 +147,14 @@ export class HotelFormComponent implements OnInit {
         return hotelFeaturesNames.includes(hotelFeatures.name);
       }
     );
-  };
+  }
+
+  cancel() {
+    if (this.hotelIdFromLogin) {
+      this.router.navigate(['/admin/hotel']);
+    } else {
+      window.location.reload();
+    }
+  }
 
 }

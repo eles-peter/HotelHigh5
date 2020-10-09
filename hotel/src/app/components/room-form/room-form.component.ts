@@ -150,4 +150,8 @@ export class RoomFormComponent implements OnInit {
     );
   }
 
+  cancel() {
+    this.router.navigate(['admin/hotel']);
+  }
+
 }
