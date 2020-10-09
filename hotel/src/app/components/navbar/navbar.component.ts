@@ -5,6 +5,7 @@ import {LoginService} from "../../services/login.service";
 import {MatDialog} from "@angular/material/dialog";
 import {LoginComponent} from "../account/login/login.component";
 import {RegistrationComponent} from "../account/registration/registration.component";
+import {DemoWarningDialogComponent} from "../demo-warning-dialog/demo-warning-dialog.component";
 
 @Component({
   selector: 'app-navbar',
@@ -81,5 +82,14 @@ export class NavbarComponent implements OnInit {
       this.isWindowOpen = false
     })
   }
+
+  demoWarning() {
+    let dialogRef = this.dialog.open(DemoWarningDialogComponent, {
+      disableClose: true,
+      height: '600px',
+      width: '850px',
+    });
+  }
+
 
 }

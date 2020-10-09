@@ -299,15 +299,15 @@ public class HotelService {
     public List<String> getCloudinaryImagesUrl() {
         List<String> cloudinaryImagesUrl = new ArrayList<>();
         try {
-            boolean isFinished = false;
+            boolean hasNext = true;
             String nextCursor = null;
 
-            while (!isFinished) {
+            while (hasNext) {
                 ApiResponse resources = cloudinary.api().resources(ObjectUtils.asMap("max_results", 500, "next_cursor", nextCursor));
                 if (resources.containsKey("next_cursor")) {
                     nextCursor = resources.get("next_cursor").toString();
                 } else {
-                    isFinished = true;
+                    hasNext = false;
                 }
                 List<Map> resourcesList = (List<Map>) resources.get("resources");
                 for (Map map : resourcesList) {

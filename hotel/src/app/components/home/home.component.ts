@@ -97,6 +97,6 @@ export class HomeComponent implements OnInit {
   }
   @HostListener('window:scroll', ['$event'])
   backgroundMoving(event) {
-    this.backgroundPosition = ' 0px ' + window.pageYOffset / 1.8 + 'px';
+    this.backgroundPosition = ' 0px ' + window.pageYOffset / 1.4 + 'px';
   }
 }

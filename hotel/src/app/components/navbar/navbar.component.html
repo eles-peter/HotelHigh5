@@ -23,6 +23,9 @@
     </ul>
 
     <ul class="nav navbar-nav ml-auto w-100 justify-content-end">
+      <li  class="nav-item">
+        <a (click)="demoWarning()" class="nav-link" style="cursor: pointer">Demo Info</a>
+      </li>
       <li class="nav-item dropdown">
         <a *ngIf="!loggedIn" aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle"
            data-toggle="dropdown" id="dropbar" style="cursor: pointer">
