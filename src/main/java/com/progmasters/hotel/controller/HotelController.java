@@ -1,6 +1,5 @@
 package com.progmasters.hotel.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.progmasters.hotel.domain.Account;
 import com.progmasters.hotel.domain.HotelFeatureType;
 import com.progmasters.hotel.dto.*;
@@ -33,16 +32,12 @@ public class HotelController {
 	private static final int NUM_OF_ELEMENTS_ON_HOMEPAGE = 4;
 
 	private HotelService hotelService;
-	private RoomReservationService roomReservationService;
-	private RoomService roomService;
 	private HotelCreateItemValidator validator;
 	private AccountService accountService;
 
 	@Autowired
 	public HotelController(HotelService hotelService, RoomReservationService roomReservationService, RoomService roomService, HotelCreateItemValidator validator, AccountService accountService) {
 		this.hotelService = hotelService;
-		this.roomReservationService = roomReservationService;
-		this.roomService = roomService;
 		this.validator = validator;
 		this.accountService = accountService;
 	}
@@ -155,8 +150,8 @@ public class HotelController {
 
 	@PostMapping("/uploadImage/{id}")
 	public ResponseEntity<Void> uploadHotelImage(@RequestParam MultipartFile file, @PathVariable Long id) {
-		hotelService.saveHotelImage(file, id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		boolean imagesIsUploaded = hotelService.saveHotelImage(file, id);
+		return imagesIsUploaded ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@PostMapping("/deleteImage/{id}")
@@ -171,6 +166,7 @@ public class HotelController {
 		return new ResponseEntity<>(imageURLs,HttpStatus.OK);
 	}
 
+	//For demo version
 	@PostMapping("/deleteUnusedImages")
 	public ResponseEntity<Void> deleteUnusedImagesFromCloud(){
 		hotelService.deleteUnusedImagesFromCloud();

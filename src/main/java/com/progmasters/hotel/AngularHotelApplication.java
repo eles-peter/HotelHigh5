@@ -1,7 +1,7 @@
 package com.progmasters.hotel;
 
-import com.progmasters.hotel.controller.DataController;
 import com.progmasters.hotel.service.AccountService;
+import com.progmasters.hotel.service.DataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +22,14 @@ public class AngularHotelApplication {
     //----- GENERATE DEFAULT ADMIN, USER, HOTELOWNER ------
 
     private final AccountService accountService;
-    private final DataController dataController;
+    private final DataService dataService;
     private static final Logger logger = LoggerFactory.getLogger(AngularHotelApplication.class);
     private static boolean rebuildDataBase = false;
 
     @Autowired
-    public AngularHotelApplication(AccountService accountService, DataController dataController) {
+    public AngularHotelApplication(AccountService accountService, DataService dataService) {
         this.accountService = accountService;
-        this.dataController = dataController;
+        this.dataService = dataService;
     }
 
     @EventListener
@@ -43,8 +43,8 @@ public class AngularHotelApplication {
     void started() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         if (rebuildDataBase) {
-            dataController.restoreDatabaseFromBackupWithJDBC();
-            logger.info("DataBase is restored from " + dataController.getDumpSqlFile());
+            dataService.restoreDatabaseFromBackupWithJDBC();
+            logger.info("DataBase is restored from {}", dataService.getDumpSqlFile());
         }
     }
 

@@ -85,7 +85,6 @@ export class NavbarComponent implements OnInit {
 
   demoWarning() {
     let dialogRef = this.dialog.open(DemoWarningDialogComponent, {
-      disableClose: true,
       height: '600px',
       width: '850px',
     });
