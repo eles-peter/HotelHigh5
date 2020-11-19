@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
-@Transactional(isolation = Isolation.READ_COMMITTED)
+@Transactional(isolation = Isolation.SERIALIZABLE)
 public class BookingService {
 
     private final BookingRepository bookingRepository;

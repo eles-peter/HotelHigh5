@@ -20,23 +20,29 @@ export class HotelService {
   constructor(private http: HttpClient) {
   }
 
-  listHotel(listPageNumber?: number): Observable<HotelListItemSubListModel> {
+  listHotel(orderBy?: string, listPageNumber?: number): Observable<HotelListItemSubListModel> {
     let params = new HttpParams();
     if (listPageNumber != null) {
       params = params.set('listPageNumber', String(listPageNumber));
     } else {
       params = params.set('listPageNumber', '0');
     }
+    if (orderBy != null) {
+      params = params.set('orderBy', orderBy);
+    } else {
+      params = params.set('orderBy', 'priceAsc');
+    }
     return this.http.get<HotelListItemSubListModel>(BASE_URL, {params});
   }
 
-  getFilteredHotelList(filterData: { numberOfGuests: string; startDate: string; endDate: string; hotelFeatures?: string }, listPageNumber?: number):
+  getFilteredHotelList(filterData: { numberOfGuests: string; startDate: string; endDate: string; hotelFeatures?: string }, orderBy?: string, listPageNumber?: number):
     Observable<HotelListItemSubListModel> {
     let params = new HttpParams()
       .set('numberOfGuests', filterData.numberOfGuests)
       .set('startDate', filterData.startDate)
       .set('endDate', filterData.endDate)
-      .set('hotelFeatures', filterData.hotelFeatures);
+      .set('hotelFeatures', filterData.hotelFeatures)
+      .set('orderBy', orderBy);
     if (listPageNumber != null) {
       params = params.set('listPageNumber', String(listPageNumber));
     } else {

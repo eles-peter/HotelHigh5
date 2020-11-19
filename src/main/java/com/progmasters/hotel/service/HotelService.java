@@ -50,26 +50,66 @@ public class HotelService {
         return Arrays.stream(HotelType.values()).map(HotelTypeOption::new).collect(Collectors.toList());
     }
 
-    public HotelListItemSubList getPageOfHotelListOrderByBestPrice(Integer listPageNumber, Integer numOfElementsPerPage) {
+    public HotelListItemSubList getPageOfHotelListOrderByBestPrice(String orderBy, Integer listPageNumber, Integer numOfElementsPerPage) {
         Pageable pageable = PageRequest.of(listPageNumber, numOfElementsPerPage);
-        Page<HotelRepository.HotelFilterResult> queryResults = hotelRepository.findAllOrderByBestPrice(pageable);
+        Page<HotelRepository.HotelFilterResult> queryResults;
+        switch (orderBy) {
+            case "priceAsc":
+                queryResults = this.hotelRepository.findAllOrderByBestPriceAsc(pageable);
+                break;
+            case "priceDesc":
+                queryResults = this.hotelRepository.findAllOrderByBestPriceDesc(pageable);
+                break;
+            case "avgRate":
+                queryResults = this.hotelRepository.findAllOrderByAvgRateDesc(pageable);
+                break;
+            default:
+                queryResults = this.hotelRepository.findAllOrderByBestPriceAsc(pageable);
+        }
         return getHotelListItemSubList(queryResults);
     }
 
     public HotelListItemSubList getPageOfHotelListFilteredByDateAndPerson
-            (LocalDate startDate, LocalDate endDate, long numberOfGuests, Integer listPageNumber, Integer numOfElementsPerPage) {
-        Pageable pageable = PageRequest.of(listPageNumber, numOfElementsPerPage);
-        Page<HotelRepository.HotelFilterResult> queryResults =
-                this.hotelRepository.findAllByDateAndPersonFilterOrderByBestPrice(startDate, endDate, numberOfGuests, pageable);
+            (LocalDate startDate, LocalDate endDate, long numberOfGuests, String orderBy, Integer listPageNumber, Integer numOfElementsPerPage) {
+        Pageable pageable  = PageRequest.of(listPageNumber, numOfElementsPerPage);
+        Page<HotelRepository.HotelFilterResult> queryResults;
+        switch (orderBy) {
+            case "priceAsc":
+                queryResults = this.hotelRepository.findAllByDateAndPersonFilterOrderByBestPriceAsc(startDate, endDate, numberOfGuests, pageable);
+                break;
+            case "priceDesc":
+                queryResults = this.hotelRepository.findAllByDateAndPersonFilterOrderByBestPriceDesc(startDate, endDate, numberOfGuests, pageable);
+                break;
+            case "avgRate":
+                queryResults = this.hotelRepository.findAllByDateAndPersonFilterOrderByAvgRateDesc(startDate, endDate, numberOfGuests, pageable);
+                break;
+            default:
+                queryResults = this.hotelRepository.findAllByDateAndPersonFilterOrderByBestPriceAsc(startDate, endDate, numberOfGuests, pageable);
+        }
         return getHotelListItemSubList(queryResults);
     }
 
     public HotelListItemSubList getPageOfHotelListFilteredByDatePersonAndFeatures
-            (LocalDate startDate, LocalDate endDate, long numberOfGuests, List<HotelFeatureType> hotelFeatures, Integer listPageNumber, Integer numOfElementsPerPage) {
+            (LocalDate startDate, LocalDate endDate, long numberOfGuests, List<HotelFeatureType> hotelFeatures, String orderBy, Integer listPageNumber, Integer numOfElementsPerPage) {
         Pageable pageable = PageRequest.of(listPageNumber, numOfElementsPerPage);
-        Page<HotelRepository.HotelFilterResult> queryResults =
-                this.hotelRepository.findAllByDatePersonAndFeaturesFilterOrderByBestPrice
+        Page<HotelRepository.HotelFilterResult> queryResults;
+        switch (orderBy) {
+            case "priceAsc":
+                queryResults = this.hotelRepository.findAllByDatePersonAndFeaturesFilterOrderByBestPriceAsc
                         (startDate, endDate, numberOfGuests, hotelFeatures, (long) hotelFeatures.size(), pageable);
+                break;
+            case "priceDesc":
+                queryResults = this.hotelRepository.findAllByDatePersonAndFeaturesFilterOrderByBestPriceDesc
+                        (startDate, endDate, numberOfGuests, hotelFeatures, (long) hotelFeatures.size(), pageable);
+                break;
+            case "avgRate":
+                queryResults = this.hotelRepository.findAllByDatePersonAndFeaturesFilterOrderByAvgRateDesc
+                        (startDate, endDate, numberOfGuests, hotelFeatures, (long) hotelFeatures.size(), pageable);
+                break;
+            default:
+                queryResults = this.hotelRepository.findAllByDatePersonAndFeaturesFilterOrderByBestPriceAsc
+                        (startDate, endDate, numberOfGuests, hotelFeatures, (long) hotelFeatures.size(), pageable);
+        }
         return getHotelListItemSubList(queryResults);
     }
 
@@ -85,7 +125,7 @@ public class HotelService {
 
     public List<HotelItemForHomePage> getHotelListTheBestPriceForHomePage(Integer numOfElementsPerPage) {
         Pageable pageable = PageRequest.of(0, numOfElementsPerPage);
-        Page<HotelRepository.HotelFilterResult> queryResults = this.hotelRepository.findAllOrderByBestPrice(pageable);
+        Page<HotelRepository.HotelFilterResult> queryResults = this.hotelRepository.findAllOrderByBestPriceAsc(pageable);
         return queryResults.stream()
                 .map(result -> new HotelItemForHomePage(result.getFilteredHotel(), result.getBestPrice().intValue()))
                 .collect(Collectors.toList());

@@ -78,6 +78,7 @@
             </div>
 
             <div class="col-md-4 mb-3 text-right align-text-bottom" style="vertical-align: bottom">
+              <br>
 
               <button (click)="filterHotelList()" class="btn btn-primary mr-4" style="vertical-align: bottom">
                 Keresés
@@ -113,7 +114,23 @@
       </div>
     </form>
 
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <label class="btn btn-outline-secondary" [ngClass]="{'active': this.orderBy == 'priceAsc'}">
+        <input type="radio" autocomplete="off" (click)="getHotelListOrderBy('priceAsc')" [checked]="this.orderBy == 'priceAsc'">
+        Árszerint növekvő
+      </label>
+      <label class="btn btn-outline-secondary" [ngClass]="{'active': this.orderBy == 'priceDesc'}">
+        <input type="radio" autocomplete="off" (click)="getHotelListOrderBy('priceDesc')" [checked]="this.orderBy == 'priceDesc'">
+        Árszerint csökkenő
+      </label>
+      <label class="btn btn-outline-secondary" [ngClass]="{'active': this.orderBy == 'avgRate'}">
+        <input type="radio" autocomplete="off" (click)="getHotelListOrderBy('avgRate')" [checked]="this.orderBy == 'avgRate'">
+        Értékelés szerint
+      </label>
+    </div>
 
+
+    <br>
     <br>
 
     <div id={{hotel.id}} *ngFor="let hotel of hotelList" class="card mb-3 border-right-0 border-bottom-0 border-left-0"

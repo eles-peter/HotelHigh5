@@ -67,9 +67,11 @@ public class HotelController {
 	}
 
 	@GetMapping
-	public ResponseEntity<HotelListItemSubList> getHotelList(@RequestParam(required = false) Integer listPageNumber) {
+	public ResponseEntity<HotelListItemSubList> getHotelList(
+			@RequestParam(required = false) String orderBy,
+			@RequestParam(required = false) Integer listPageNumber) {
 		if (listPageNumber == null) listPageNumber = 0;
-		return new ResponseEntity<>(hotelService.getPageOfHotelListOrderByBestPrice(listPageNumber, NUM_OF_ELEMENTS_PER_PAGE), HttpStatus.OK);
+		return new ResponseEntity<>(hotelService.getPageOfHotelListOrderByBestPrice(orderBy, listPageNumber, NUM_OF_ELEMENTS_PER_PAGE), HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}/filter")
@@ -96,14 +98,15 @@ public class HotelController {
 			@RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
 			@RequestParam("numberOfGuests") long numberOfGuests,
 			@RequestParam(required = false) List<String> hotelFeatures,
+			@RequestParam(required = false) String orderBy,
 			@RequestParam(required = false) Integer listPageNumber) {
 		if (listPageNumber == null) listPageNumber = 0;
 		HotelListItemSubList hotelList;
 		if (hotelFeatures == null || hotelFeatures.isEmpty()) {
-			hotelList = hotelService.getPageOfHotelListFilteredByDateAndPerson(startDate, endDate, numberOfGuests, listPageNumber, NUM_OF_ELEMENTS_PER_PAGE);
+			hotelList = hotelService.getPageOfHotelListFilteredByDateAndPerson(startDate, endDate, numberOfGuests, orderBy, listPageNumber, NUM_OF_ELEMENTS_PER_PAGE);
 		} else {
 			List<HotelFeatureType> hotelFeatureEnumList = hotelFeatures.stream().map(HotelFeatureType::valueOf).collect(Collectors.toList());
-			hotelList = hotelService.getPageOfHotelListFilteredByDatePersonAndFeatures(startDate, endDate, numberOfGuests, hotelFeatureEnumList, listPageNumber, NUM_OF_ELEMENTS_PER_PAGE);
+			hotelList = hotelService.getPageOfHotelListFilteredByDatePersonAndFeatures(startDate, endDate, numberOfGuests, hotelFeatureEnumList, orderBy, listPageNumber, NUM_OF_ELEMENTS_PER_PAGE);
 		}
 		return new ResponseEntity<>(hotelList, HttpStatus.OK);
 	}

@@ -28,6 +28,7 @@ export class HotelListComponent implements OnInit, OnDestroy {
   filterForm: FormGroup;
   filterData = null;
   hotelFeatureTypeOption: HotelFeatureTypeOptionModel[];
+  orderBy: string;
   listPageNumber: number = 0;
   pageNumbers: number[];
   mapCenter = {
@@ -99,10 +100,14 @@ export class HotelListComponent implements OnInit, OnDestroy {
             startDate: queryParams['startDate'],
             endDate: queryParams['endDate'],
             hotelFeatures: queryParams['hotelFeatures'],
+            orderBy: queryParams['orderBy'],
             listPageNumber: queryParams['listPageNumber'],
           };
           if (this.filterData.hotelFeatures == undefined) {
             this.filterData.hotelFeatures = '';
+          }
+          if (this.filterData.orderBy == undefined) {
+            this.filterData.orderBy = 'priceAsc';
           }
           if (this.filterData.listPageNumber == undefined) {
             this.listPageNumber = 0;
@@ -117,9 +122,9 @@ export class HotelListComponent implements OnInit, OnDestroy {
             end: new Date(this.filterData.endDate),
           };
           this.filterForm.controls['bookingDateRange'].setValue(filterBookingDateRange);
+          this.orderBy = this.filterData.orderBy;
 
-
-          this.hotelService.getFilteredHotelList(this.filterData, this.listPageNumber).subscribe(
+          this.hotelService.getFilteredHotelList(this.filterData, this.orderBy, this.listPageNumber).subscribe(
             (response: HotelListItemSubListModel) => {
               this.hotelList = response.hotelSubList;
               this.createMapBounds();
@@ -132,8 +137,12 @@ export class HotelListComponent implements OnInit, OnDestroy {
     } else {
       this.route.queryParams.subscribe(
         queryParams => {
+          this.orderBy = queryParams['orderBy'];
+          if (this.orderBy == undefined) {
+            this.orderBy = 'priceAsc';
+          }
           this.listPageNumber = queryParams['listPageNumber'];
-          this.hotelService.listHotel(this.listPageNumber).subscribe(
+          this.hotelService.listHotel(this.orderBy, this.listPageNumber).subscribe(
             (response: HotelListItemSubListModel) => {
               this.hotelList = response.hotelSubList;
               this.createMapBounds();
@@ -163,13 +172,16 @@ export class HotelListComponent implements OnInit, OnDestroy {
             startDate: queryParamsFromRoute['startDate'],
             endDate: queryParamsFromRoute['endDate'],
             hotelFeatures: queryParamsFromRoute['hotelFeatures'],
+            orderBy: this.orderBy, // lehet hogy querparam
             'listPageNumber': pageNum
           };
           this.router.navigate(['/hotel/filter'], {queryParams});
         }
       );
     } else {
-      const queryParams = {'listPageNumber': pageNum};
+      const queryParams = {
+        orderBy: this.orderBy,
+        'listPageNumber': pageNum};
       this.router.navigate(['hotel'], {queryParams});
     }
   }
@@ -188,8 +200,34 @@ export class HotelListComponent implements OnInit, OnDestroy {
       'startDate': dateToJsonDateString(this.filterForm.value.bookingDateRange.begin),
       'endDate': dateToJsonDateString(this.filterForm.value.bookingDateRange.end),
       'hotelFeatures': this.createHotelFeaturesFilterArrayToSend().join(', '),
+      'orderBy': this.orderBy,
     };
     this.router.navigate(['/hotel/filter'], {queryParams})
+  }
+
+  //TODO refaktorálni, majdnem ugyanaz, mint a paging....
+  getHotelListOrderBy(newOrderBy : string) {
+    this.orderBy = newOrderBy;
+    if (this.router.url.startsWith('/hotel/filter?')) {
+      this.route.queryParams.subscribe(
+        queryParamsFromRoute => {
+          const queryParams = {
+            numberOfGuests: queryParamsFromRoute['numberOfGuests'],
+            startDate: queryParamsFromRoute['startDate'],
+            endDate: queryParamsFromRoute['endDate'],
+            hotelFeatures: queryParamsFromRoute['hotelFeatures'],
+            orderBy: this.orderBy,
+            'listPageNumber': 0
+          };
+          this.router.navigate(['/hotel/filter'], {queryParams});
+        }
+      );
+    } else {
+      const queryParams = {
+        orderBy: this.orderBy,
+        'listPageNumber': 0};
+      this.router.navigate(['hotel'], {queryParams});
+    }
   }
 
   resetFilters() {
@@ -199,7 +237,10 @@ export class HotelListComponent implements OnInit, OnDestroy {
   }
 
   backToHotelList() {
-    this.router.navigate(['/hotel'])
+    const queryParams = {
+      orderBy: this.orderBy,
+      'listPageNumber': 0};
+    this.router.navigate(['hotel'], {queryParams});
   }
 
   deleteHotel(id: number): void {
