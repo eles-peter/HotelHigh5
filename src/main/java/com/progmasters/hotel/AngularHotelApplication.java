@@ -19,7 +19,6 @@ import java.util.TimeZone;
 @EnableAsync
 @EnableScheduling
 public class AngularHotelApplication {
-    //----- GENERATE DEFAULT ADMIN, USER, HOTELOWNER ------
 
     private final AccountService accountService;
     private final DataService dataService;
@@ -32,6 +31,7 @@ public class AngularHotelApplication {
         this.dataService = dataService;
     }
 
+    //----- GENERATE DEFAULT ADMIN, USER, HOTELOWNER ------
     @EventListener
     public void seed(ContextRefreshedEvent event) {
         accountService.checkAdmin();
@@ -50,7 +50,8 @@ public class AngularHotelApplication {
 
     public static void main(String[] args) {
         for (String arg : args) {
-            if (arg.equals("rebuildDataBase")) rebuildDataBase = true;
+            if (arg.equals("rebuildDataBase"))
+                rebuildDataBase = true;
         }
         SpringApplication.run(AngularHotelApplication.class, args);
     }
